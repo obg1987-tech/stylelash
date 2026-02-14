@@ -7,6 +7,18 @@ export default function sitemap() {
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1
+    },
+    {
+      url: `${siteUrl}/community`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8
+    },
+    {
+      url: `${siteUrl}/brow-preview`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7
     }
   ];
 }
