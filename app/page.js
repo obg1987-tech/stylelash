@@ -16,6 +16,7 @@ const navItems = [
   { label: "Before/After", href: "#before-after" },
   { label: "Pricing", href: "#pricing" },
   { label: "Info", href: "#info" },
+  { label: "Guide", href: "#guide" },
   { label: "Board", href: communityUrl }
 ];
 
@@ -142,24 +143,36 @@ export default function Home() {
         <section className="hero" id="home">
           <div className="hero-copy-block reveal">
             <p className="eyebrow">STYLELASH_KR</p>
-            <h1>
-              Precision Brows,
-              <br />
-              Effortless Beauty.
+            <h1 className="hero-title-3d" aria-label="Precision Brows, Effortless Beauty.">
+              <span className="hero-title-face">
+                Precision Brows,
+                <br />
+                Effortless Beauty.
+              </span>
+              <span className="hero-title-edge" aria-hidden>
+                Precision Brows,
+                <br />
+                Effortless Beauty.
+              </span>
+              <span className="hero-title-gloss" aria-hidden>
+                Precision Brows,
+                <br />
+                Effortless Beauty.
+              </span>
             </h1>
             <p>자연스럽고 또렷한 인상 변화를 위해 맞춤형 눈썹 시술을 제공합니다.</p>
                         <div className="hero-metrics">
               <article>
-                <span>Review</span>
-                <strong>18 + 43</strong>
+                <span>Signature 01</span>
+                <strong>1:1 Face Mapping</strong>
               </article>
               <article>
-                <span>Open</span>
-                <strong>11:00-21:00</strong>
+                <span>Signature 02</span>
+                <strong>Natural Pigment Layering</strong>
               </article>
               <article>
-                <span>Closed</span>
-                <strong>공휴일</strong>
+                <span>Signature 03</span>
+                <strong>Symmetry Calibration</strong>
               </article>
             </div>
           </div>
@@ -251,7 +264,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="experience">
+        <section className="experience" id="guide">
           <div className="section-head reveal">
             <p>Flow</p>
             <h2>예약 프로세스</h2>
