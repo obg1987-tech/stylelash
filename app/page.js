@@ -123,10 +123,7 @@ export default function Home() {
               </a>
             ))}
           </nav>
-          <a href={reservationUrl} target="_blank" rel="noreferrer" className="nav-cta">
-            예약문의
-          </a>
-        </div>
+                  </div>
         <details className="mobile-menu">
           <summary aria-label="메뉴 열기">Menu</summary>
           <div className="mobile-menu-panel">
@@ -135,10 +132,7 @@ export default function Home() {
                 {item.label}
               </a>
             ))}
-            <a href={reservationUrl} target="_blank" rel="noreferrer">
-              예약문의
-            </a>
-          </div>
+                      </div>
         </details>
       </header>
 
@@ -154,15 +148,7 @@ export default function Home() {
               Effortless Beauty.
             </h1>
             <p>자연스럽고 또렷한 인상 변화를 위해 맞춤형 눈썹 시술을 제공합니다.</p>
-            <div className="hero-actions">
-              <a href="#pricing" className="btn-main">
-                가격 보기
-              </a>
-              <a href="#contact" className="btn-sub">
-                예약 방법
-              </a>
-            </div>
-            <div className="hero-metrics">
+                        <div className="hero-metrics">
               <article>
                 <span>Review</span>
                 <strong>18 + 43</strong>
