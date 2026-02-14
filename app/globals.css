@@ -1350,8 +1350,40 @@ a {
   animation: softHaloBlue 2.2s ease-in-out infinite;
 }
 
+.community-floating-home-btn {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  --mag-x: 0px;
+  --mag-y: 0px;
+  transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y)));
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  border: 1px solid #bde7cc;
+  background: linear-gradient(145deg, #ecfff4 0%, #e8ffef 48%, #f2fff7 100%);
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #101317;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 220ms ease, box-shadow 260ms ease, border-color 220ms ease, filter 220ms ease;
+  box-shadow:
+    0 0 0 1px #caeed8,
+    0 0 0 7px #5fd18c24,
+    0 0 24px #4fc77f5c,
+    0 10px 22px #10233c1f;
+  animation: softHaloGreen 2.2s ease-in-out infinite;
+}
+
 .floating-tool-btn::after,
-.brow-floating-home-btn::after {
+.brow-floating-home-btn::after,
+.community-floating-home-btn::after {
   content: "";
   position: absolute;
   inset: -32% auto -32% -125%;
@@ -1364,7 +1396,8 @@ a {
 }
 
 .floating-tool-btn > *,
-.brow-floating-home-btn > * {
+.brow-floating-home-btn > *,
+.community-floating-home-btn > * {
   position: relative;
   z-index: 1;
 }
@@ -1375,6 +1408,16 @@ a {
 }
 
 .brow-floating-home-btn small {
+  font-size: 0.66rem;
+  color: #4e5863;
+}
+
+.community-floating-home-btn span {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.community-floating-home-btn small {
   font-size: 0.66rem;
   color: #4e5863;
 }
@@ -1506,7 +1549,8 @@ a {
   }
 
   .floating-tool-btn:hover,
-  .brow-floating-home-btn:hover {
+  .brow-floating-home-btn:hover,
+  .community-floating-home-btn:hover {
     transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y))) scale(1.07);
     border-color: #b18bff;
     filter: saturate(1.08);
@@ -1526,8 +1570,18 @@ a {
       0 18px 30px #10233c2a;
   }
 
+  .community-floating-home-btn:hover {
+    border-color: #74d49a;
+    box-shadow:
+      0 0 0 1px #caeed8,
+      0 0 0 10px #5fd18c33,
+      0 0 34px #4fc77f87,
+      0 18px 30px #10233c2a;
+  }
+
   .floating-tool-btn:hover::after,
-  .brow-floating-home-btn:hover::after {
+  .brow-floating-home-btn:hover::after,
+  .community-floating-home-btn:hover::after {
     transform: translateX(520%) rotate(20deg);
   }
 }
@@ -1600,6 +1654,24 @@ a {
       0 0 0 1px #c9dbff,
       0 0 0 10px #6da8ff30,
       0 0 30px #5f96ff80,
+      0 10px 22px #10233c1f;
+  }
+}
+
+@keyframes softHaloGreen {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #caeed8,
+      0 0 0 7px #5fd18c24,
+      0 0 20px #4fc77f5c,
+      0 10px 22px #10233c1f;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px #caeed8,
+      0 0 0 10px #5fd18c30,
+      0 0 30px #4fc77f80,
       0 10px 22px #10233c1f;
   }
 }
@@ -1714,6 +1786,15 @@ a {
   }
 
   .brow-floating-home-btn {
+    top: auto;
+    right: 0.65rem;
+    bottom: 4.8rem;
+    transform: translateX(var(--mag-x)) translateY(var(--mag-y));
+    width: 72px;
+    height: 72px;
+  }
+
+  .community-floating-home-btn {
     top: auto;
     right: 0.65rem;
     bottom: 4.8rem;

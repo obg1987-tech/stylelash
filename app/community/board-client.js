@@ -1,7 +1,21 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+
+function applyMagnetic(event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const px = (event.clientX - rect.left) / rect.width - 0.5;
+  const py = (event.clientY - rect.top) / rect.height - 0.5;
+  const maxShift = 8;
+  event.currentTarget.style.setProperty("--mag-x", `${(px * maxShift).toFixed(2)}px`);
+  event.currentTarget.style.setProperty("--mag-y", `${(py * maxShift).toFixed(2)}px`);
+}
+
+function resetMagnetic(event) {
+  event.currentTarget.style.setProperty("--mag-x", "0px");
+  event.currentTarget.style.setProperty("--mag-y", "0px");
+}
 
 function formatDate(value) {
   if (!value) return "";
@@ -36,11 +50,11 @@ export default function CommunityBoardClient() {
     try {
       const response = await fetch("/api/community/posts", { cache: "no-store" });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload?.error || "Failed to load posts.");
+      if (!response.ok) throw new Error(payload?.error || "후기 목록을 불러오지 못했습니다.");
       setConfigured(payload.configured !== false);
       setPosts(Array.isArray(payload.posts) ? payload.posts : []);
     } catch (error) {
-      setMessage(error.message || "Failed to load posts.");
+      setMessage(error.message || "후기 목록을 불러오지 못했습니다.");
     } finally {
       setLoading(false);
     }
@@ -57,15 +71,15 @@ export default function CommunityBoardClient() {
     const rating = Number(form.rating);
 
     if (nickname.length < 2) {
-      setMessage("Nickname must be at least 2 characters.");
+      setMessage("닉네임은 2자 이상 입력해 주세요.");
       return;
     }
     if (content.length < 8) {
-      setMessage("Review content must be at least 8 characters.");
+      setMessage("후기는 8자 이상 입력해 주세요.");
       return;
     }
     if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
-      setMessage("Rating must be between 1 and 5.");
+      setMessage("별점은 1~5 사이로 선택해 주세요.");
       return;
     }
 
@@ -84,12 +98,12 @@ export default function CommunityBoardClient() {
         })
       });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload?.error || "Failed to register review.");
-      setMessage("Review submitted successfully.");
+      if (!response.ok) throw new Error(payload?.error || "후기 등록에 실패했습니다.");
+      setMessage("후기가 등록되었습니다.");
       setForm({ nickname: "", rating: "5", content: "" });
       await fetchPosts();
     } catch (error) {
-      setMessage(error.message || "Failed to register review.");
+      setMessage(error.message || "후기 등록에 실패했습니다.");
     } finally {
       setSubmitting(false);
     }
@@ -99,64 +113,62 @@ export default function CommunityBoardClient() {
     <main className="community-page">
       <header className="community-head">
         <Link href="/" className="community-back">
-          ← Back to Home
+          ← 홈으로 돌아가기
         </Link>
-        <h1>Community Board</h1>
-        <p>Leave your review and check real customer feedback.</p>
+        <h1>후기 게시판</h1>
+        <p>실제 시술 후기를 남기고, 다른 고객의 경험도 확인해 보세요.</p>
       </header>
 
       <section className="community-grid">
         <article className="community-card">
-          <h2>Write a Review</h2>
+          <h2>후기 작성</h2>
           {!configured ? (
-            <p className="community-hint">
-              Supabase is not configured yet. Set `NEXT_PUBLIC_SUPABASE_URL` and keys in Vercel and `.env.local`.
-            </p>
+            <p className="community-hint">현재 게시판 설정이 완료되지 않았습니다. 관리자에게 문의해 주세요.</p>
           ) : null}
           <form onSubmit={submit} className="community-form">
             <label>
-              Nickname
+              닉네임
               <input
                 type="text"
                 value={form.nickname}
                 minLength={2}
                 maxLength={24}
                 onChange={(e) => setForm((prev) => ({ ...prev, nickname: e.target.value }))}
-                placeholder="Example: BrowLover"
+                placeholder="예: 브로우맛집"
               />
             </label>
             <label>
-              Rating
+              별점
               <select value={form.rating} onChange={(e) => setForm((prev) => ({ ...prev, rating: e.target.value }))}>
-                <option value="5">5</option>
-                <option value="4">4</option>
-                <option value="3">3</option>
-                <option value="2">2</option>
-                <option value="1">1</option>
+                <option value="5">5점</option>
+                <option value="4">4점</option>
+                <option value="3">3점</option>
+                <option value="2">2점</option>
+                <option value="1">1점</option>
               </select>
             </label>
             <label>
-              Review
+              후기 내용
               <textarea
                 value={form.content}
                 minLength={8}
                 maxLength={1000}
                 onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
-                placeholder="Tell us about your result, design, and overall experience."
+                placeholder="디자인 만족도, 결과, 분위기 등을 자유롭게 남겨주세요."
                 rows={5}
               />
             </label>
             <button type="submit" disabled={!canSubmit || !configured}>
-              {submitting ? "Submitting..." : "Submit Review"}
+              {submitting ? "등록 중..." : "후기 등록"}
             </button>
           </form>
           {message ? <p className="community-message">{message}</p> : null}
         </article>
 
         <article className="community-card">
-          <h2>Latest Reviews</h2>
-          {loading ? <p className="community-hint">Loading...</p> : null}
-          {!loading && posts.length === 0 ? <p className="community-hint">No reviews yet.</p> : null}
+          <h2>최신 후기</h2>
+          {loading ? <p className="community-hint">불러오는 중...</p> : null}
+          {!loading && posts.length === 0 ? <p className="community-hint">아직 등록된 후기가 없습니다.</p> : null}
           <div className="community-post-list">
             {posts.map((post) => (
               <section key={post.id} className="community-post">
@@ -173,6 +185,17 @@ export default function CommunityBoardClient() {
           </div>
         </article>
       </section>
+
+      <Link
+        href="/"
+        className="community-floating-home-btn"
+        aria-label="메인으로 이동"
+        onMouseMove={applyMagnetic}
+        onMouseLeave={resetMagnetic}
+      >
+        <span>Home</span>
+        <small>Main</small>
+      </Link>
     </main>
   );
 }
