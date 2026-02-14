@@ -1,9 +1,8 @@
-﻿import Image from "next/image";
-import MagneticLayer from "./magnetic-layer";
+import Image from "next/image";
 import BeforeAfterSlider from "./before-after-slider";
 
-const instagramUrl =
-  "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
+const instagramUrl = "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
 const kakaoChannelUrl = "";
 const reservationUrl = kakaoChannelUrl || instagramUrl;
 const reservationCtaLabel = kakaoChannelUrl
@@ -50,7 +49,7 @@ const priceMenus = [
   { name: "리터치 보정", price: "문의" }
 ];
 
-const process = [
+const reservationProcess = [
   "상담: 기존 눈썹 상태/피부 타입/원하는 인상 체크",
   "디자인: 골격과 비율에 맞춘 맞춤 눈썹 라인 제안",
   "시술: 위생 기준 기반의 섬세한 진행",
@@ -86,10 +85,12 @@ const faqItems = [
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "BeautySalon",
+  "@id": `${siteUrl}#beautysalon`,
   name: "스타일래쉬",
-  image: "/assets/hero/1.png",
-  url: naverPlaceUrl,
-  sameAs: [instagramUrl, naverPlaceUrl],
+  image: `${siteUrl}/assets/hero/1.png`,
+  url: siteUrl,
+  telephone: "+82-507-1405-3087",
+  sameAs: [instagramUrl, naverPlaceUrl, naverReviewUrl],
   address: {
     "@type": "PostalAddress",
     streetAddress: "산본로323번길 4-21 미성빌딩 3층",
@@ -113,6 +114,7 @@ const localBusinessJsonLd = {
       closes: "21:00"
     }
   ],
+  priceRange: "₩₩",
   keywords: ["눈썹문신", "반영구눈썹", "콤보눈썹", "자연눈썹", "산본눈썹문신"]
 };
 
@@ -151,7 +153,6 @@ export default function Home() {
       </header>
 
       <main className="site-main">
-        <MagneticLayer />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
@@ -166,8 +167,8 @@ export default function Home() {
               Effortless Beauty.
             </h1>
             <p>
-              부드러운 인상 변화와 선명한 결과. 스타일래쉬는 눈썹문신 디자인을
-              더 자연스럽고 세련된 일상 루틴으로 완성합니다.
+              부드러운 인상 변화와 선명한 결과. 스타일래쉬는 눈썹문신 디자인을 더 자연스럽고 세련된 일상
+              루틴으로 완성합니다.
             </p>
             <div className="hero-actions">
               <a href="#pricing" className="btn-main">
@@ -178,21 +179,21 @@ export default function Home() {
               </a>
             </div>
             <div className="hero-metrics">
-              <article data-magnetic="true">
+              <article>
                 <span>Review</span>
                 <strong>18 + 43</strong>
               </article>
-              <article data-magnetic="true">
+              <article>
                 <span>Open</span>
                 <strong>11:00-21:00</strong>
               </article>
-              <article data-magnetic="true">
+              <article>
                 <span>Closed</span>
                 <strong>공휴일</strong>
               </article>
             </div>
           </div>
-          <div className="hero-visual reveal" data-magnetic="true">
+          <div className="hero-visual reveal">
             <Image
               src="/assets/hero/1.png"
               alt="STYLE LASH 메인 비주얼"
@@ -219,11 +220,7 @@ export default function Home() {
           </div>
           <div className="service-grid">
             {serviceCards.map((card) => (
-              <article
-                key={card.title}
-                className={`service-card ${card.className || ""} reveal`}
-                data-magnetic="true"
-              >
+              <article key={card.title} className={`service-card ${card.className || ""} reveal`}>
                 <div className="service-media">
                   <Image
                     src={card.image}
@@ -255,13 +252,11 @@ export default function Home() {
               <p>Pricing</p>
               <h2>시술 메뉴 / 가격</h2>
             </div>
-            <p className="price-note">
-              가격 기준: 2026-02-14 네이버 플레이스 공개 정보 (변동 가능)
-            </p>
+            <p className="price-note">가격 기준: 2026-02-14 네이버 플레이스 공개 정보 (변동 가능)</p>
           </div>
           <div className="pricing-table reveal">
             {priceMenus.map((menu) => (
-              <article key={menu.name} className="price-row" data-magnetic="true">
+              <article key={menu.name} className="price-row">
                 <p>{menu.name}</p>
                 <strong>{menu.price}</strong>
               </article>
@@ -276,21 +271,15 @@ export default function Home() {
           </div>
           <div className="info-grid">
             {businessInfo.map((item) => (
-              <article key={item.label} className="info-card reveal" data-magnetic="true">
+              <article key={item.label} className="info-card reveal">
                 <p className="info-label">{item.label}</p>
                 <p className="info-value">{item.value}</p>
               </article>
             ))}
           </div>
-          <div className="review-panel reveal" data-magnetic="true">
+          <div className="review-panel reveal">
             <div className="review-media">
-              <Image
-                src="/assets/review/1.png"
-                alt="고객 리뷰 무드 이미지"
-                fill
-                quality={72}
-                sizes="100vw"
-              />
+              <Image src="/assets/review/1.png" alt="고객 리뷰 무드 이미지" fill quality={72} sizes="100vw" />
             </div>
             <div className="review-copy">
               <p>네이버 기준 리뷰</p>
@@ -308,8 +297,8 @@ export default function Home() {
             <h2>예약 프로세스</h2>
           </div>
           <ol className="timeline">
-            {process.map((step) => (
-              <li key={step} className="reveal" data-magnetic="true">
+            {reservationProcess.map((step) => (
+              <li key={step} className="reveal">
                 {step}
               </li>
             ))}
@@ -323,7 +312,7 @@ export default function Home() {
           </div>
           <div className="faq-list">
             {faqItems.map((item) => (
-              <details key={item.q} className="reveal" data-magnetic="true">
+              <details key={item.q} className="reveal">
                 <summary>{item.q}</summary>
                 <p>{item.a}</p>
               </details>
@@ -336,7 +325,7 @@ export default function Home() {
           <h2>원하시는 날짜를 보내주시면 빠르게 예약 안내드릴게요.</h2>
           <div className="contact-actions">
             <a href={reservationUrl} target="_blank" rel="noreferrer" className="btn-main">
-              인스타그램 DM 예약
+              {reservationCtaLabel}
             </a>
             <a href={naverMapUrl} target="_blank" rel="noreferrer" className="btn-sub">
               네이버 지도 위치 확인
@@ -351,5 +340,3 @@ export default function Home() {
     </>
   );
 }
-
-

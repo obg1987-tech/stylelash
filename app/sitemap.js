@@ -1,4 +1,4 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylelash.kr";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 
 export default function sitemap() {
   return [
@@ -10,3 +10,4 @@ export default function sitemap() {
     }
   ];
 }
+

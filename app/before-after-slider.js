@@ -5,31 +5,27 @@ import Image from "next/image";
 
 export default function BeforeAfterSlider() {
   const trackRef = useRef(null);
-  const ratioRef = useRef(0.5);
   const targetRef = useRef(0.5);
   const rafRef = useRef(0);
   const draggingRef = useRef(false);
   const [ratio, setRatio] = useState(0.5);
 
-  useEffect(() => {
-    const animate = () => {
-      const current = ratioRef.current;
-      const target = targetRef.current;
-      const next = current + (target - current) * 0.22;
-      ratioRef.current = next;
-      setRatio(next);
-      rafRef.current = requestAnimationFrame(animate);
-    };
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, []);
+  const scheduleRender = () => {
+    if (rafRef.current) return;
+    rafRef.current = requestAnimationFrame(() => {
+      setRatio(targetRef.current);
+      rafRef.current = 0;
+    });
+  };
 
   const updateByClientX = (clientX) => {
     if (!trackRef.current) return;
     const rect = trackRef.current.getBoundingClientRect();
     const raw = (clientX - rect.left) / rect.width;
     targetRef.current = Math.max(0.05, Math.min(0.95, raw));
+    scheduleRender();
   };
 
   const onPointerMove = (event) => {
@@ -51,9 +47,11 @@ export default function BeforeAfterSlider() {
   const onKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
       targetRef.current = Math.max(0.05, targetRef.current - 0.04);
+      scheduleRender();
     }
     if (event.key === "ArrowRight") {
       targetRef.current = Math.min(0.95, targetRef.current + 0.04);
+      scheduleRender();
     }
   };
 
@@ -74,7 +72,7 @@ export default function BeforeAfterSlider() {
         <div className="ba-layer ba-after">
           <Image
             src="/assets/before-after/2.png"
-            alt="시술 후 이미지"
+            alt="눈썹문신 시술 후 이미지"
             fill
             quality={76}
             sizes="(max-width: 800px) 100vw, 76vw"
@@ -85,7 +83,7 @@ export default function BeforeAfterSlider() {
         <div className="ba-layer ba-before" style={{ clipPath: `inset(0 ${100 - ratio * 100}% 0 0)` }}>
           <Image
             src="/assets/before-after/1.png"
-            alt="시술 전 이미지"
+            alt="눈썹문신 시술 전 이미지"
             fill
             quality={76}
             sizes="(max-width: 800px) 100vw, 76vw"

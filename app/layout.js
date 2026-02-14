@@ -1,4 +1,4 @@
-﻿import { Plus_Jakarta_Sans, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
+import { Plus_Jakarta_Sans, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
 
 const display = Plus_Jakarta_Sans({
@@ -12,13 +12,20 @@ const body = Noto_Sans_KR({
   variable: "--font-body"
 });
 
-const navSerif = Noto_Serif_KR({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-nav"
-});
-
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
+const verification = {
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : {}),
+  ...(process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
+    ? {
+        other: {
+          "naver-site-verification":
+            process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
+        }
+      }
+    : {})
+};
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
@@ -42,6 +49,11 @@ export const metadata = {
   ],
   alternates: {
     canonical: "/"
+  },
+  icons: {
+    icon: "/og/sqare.png",
+    apple: "/og/sqare.png",
+    shortcut: "/og/sqare.png"
   },
   openGraph: {
     type: "website",
@@ -73,6 +85,7 @@ export const metadata = {
       "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정 1:1 맞춤 디자인.",
     images: ["/og/main.png"]
   },
+  verification: Object.keys(verification).length ? verification : undefined,
   robots: {
     index: true,
     follow: true,
@@ -90,7 +103,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={`${display.variable} ${body.variable} ${navSerif.variable}`}>{children}</body>
+      <body className={`${display.variable} ${body.variable}`}>{children}</body>
     </html>
   );
 }
