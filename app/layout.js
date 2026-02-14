@@ -12,7 +12,7 @@ const body = Noto_Sans_KR({
   variable: "--font-body"
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylelash.kr";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
@@ -47,10 +47,16 @@ export const metadata = {
       "군포 산본 스타일래쉬. 속눈썹, 브로우, 왁싱, 반영구까지 1:1 맞춤 디자인.",
     images: [
       {
-        url: "/opengraph-image",
+        url: "/og/main.png",
         width: 1200,
         height: 630,
         alt: "STYLE LASH"
+      },
+      {
+        url: "/og/sqare.png",
+        width: 1200,
+        height: 1200,
+        alt: "STYLE LASH Square"
       }
     ]
   },
@@ -59,7 +65,7 @@ export const metadata = {
     title: "STYLE LASH | 속눈썹 & 뷰티 디자인",
     description:
       "군포 산본 스타일래쉬. 속눈썹, 브로우, 왁싱, 반영구 1:1 맞춤 디자인.",
-    images: ["/twitter-image"]
+    images: ["/og/main.png"]
   },
   robots: {
     index: true,

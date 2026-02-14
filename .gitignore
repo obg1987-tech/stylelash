@@ -10,3 +10,4 @@ pnpm-debug.log*
 !.env.example
 *.tmp
 .tmp-*
+.vercel
