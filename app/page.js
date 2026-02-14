@@ -1,6 +1,9 @@
 import Image from "next/image";
+import fs from "node:fs";
+import path from "node:path";
 import BeforeAfterSlider from "./before-after-slider";
 import FloatingToolButton from "../components/floating-tool-button";
+import ReviewCarousel from "../components/review-carousel";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 const instagramUrl = "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
@@ -80,6 +83,55 @@ const faqItems = [
     a: "시술 직후 관리 방법과 주의사항을 상세하게 안내해드립니다."
   }
 ];
+
+const fallbackReviewCarouselCards = [
+  { title: "Natural Brow Line", image: "/assets/review/1.png" },
+  { title: "Soft Daily Mood", image: "/assets/service/1.png" },
+  { title: "Defined Balance", image: "/assets/service/2.png" },
+  { title: "Before/After Focus", image: "/assets/before-after/1.png" },
+  { title: "Clean Shape Update", image: "/assets/before-after/2.png" }
+];
+
+const reviewCarouselDir = path.join(process.cwd(), "public", "assets", "review-carousel");
+const reviewImagePattern = /\.(png|jpe?g|webp|avif)$/i;
+
+function titleFromFilename(filename, index) {
+  const base = filename.replace(/\.[^.]+$/, "");
+  const cleaned = base.replace(/[-_]+/g, " ").trim();
+  if (!cleaned) return `Review ${index + 1}`;
+  return cleaned
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function loadReviewCarouselCards() {
+  try {
+    if (!fs.existsSync(reviewCarouselDir)) {
+      return fallbackReviewCarouselCards;
+    }
+
+    const files = fs
+      .readdirSync(reviewCarouselDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && reviewImagePattern.test(entry.name))
+      .map((entry) => entry.name)
+      .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
+
+    if (files.length === 0) {
+      return fallbackReviewCarouselCards;
+    }
+
+    return files.map((file, index) => ({
+      title: titleFromFilename(file, index),
+      image: `/assets/review-carousel/${file}`
+    }));
+  } catch {
+    return fallbackReviewCarouselCards;
+  }
+}
+
+const reviewCarouselCards = loadReviewCarouselCards();
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
@@ -262,12 +314,20 @@ export default function Home() {
               </a>
             </div>
           </div>
+
+          <div className="review-carousel reveal" aria-label="후기 카드 캐러셀">
+            <div className="review-carousel-head">
+              <p>Review Feed</p>
+              <h3>고객 후기 스냅</h3>
+            </div>
+            <ReviewCarousel cards={reviewCarouselCards} />
+          </div>
         </section>
 
         <section className="experience" id="guide">
           <div className="section-head reveal">
             <p>Flow</p>
-            <h2>예약 프로세스</h2>
+            <h2>시술 프로세스</h2>
           </div>
           <ol className="timeline">
             {reservationProcess.map((step) => (

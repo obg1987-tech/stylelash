@@ -913,6 +913,84 @@ a {
   color: #27456f !important;
 }
 
+.review-carousel {
+  margin-top: 0.95rem;
+  border: 1px solid #dbe4ee;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 0.78rem;
+  overflow: hidden;
+}
+
+.review-carousel-head {
+  margin-bottom: 0.6rem;
+}
+
+.review-carousel-head p {
+  margin: 0;
+  color: #607086;
+  font-size: 0.74rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.review-carousel-head h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1.02rem;
+  color: #233243;
+}
+
+.review-carousel-viewport {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.review-carousel-track {
+  display: flex;
+  width: max-content;
+}
+
+.review-carousel-set {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.review-carousel-track--interactive {
+  animation: none !important;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.review-carousel-track--interactive:active {
+  cursor: grabbing;
+}
+
+.review-slide-card {
+  width: 230px;
+  flex: 0 0 auto;
+  border: 1px solid #dbe4ef;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9fbff;
+}
+
+.review-slide-media {
+  position: relative;
+  height: 150px;
+  background: #eef3f8;
+}
+
+.review-slide-media img {
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+
+.review-carousel:hover .review-carousel-track {
+  animation-play-state: paused;
+}
+
 .community-page {
   width: min(1280px, calc(100vw - 1.4rem));
   margin: 1.1rem auto;
@@ -1880,6 +1958,15 @@ a {
   }
 }
 
+@keyframes reviewMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 0.325rem));
+  }
+}
+
 @keyframes heroTitleGloss {
   0%,
   30% {
@@ -2159,6 +2246,10 @@ a {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .review-carousel-track {
+    animation: none;
   }
 }
 
