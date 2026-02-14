@@ -1,5 +1,6 @@
 import Image from "next/image";
 import BeforeAfterSlider from "./before-after-slider";
+import FloatingToolButton from "../components/floating-tool-button";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 const instagramUrl = "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
@@ -337,6 +338,7 @@ export default function Home() {
       <a href={reservationUrl} target="_blank" rel="noreferrer" className="floating-cta">
         {reservationCtaLabel}
       </a>
+      <FloatingToolButton />
     </>
   );
 }

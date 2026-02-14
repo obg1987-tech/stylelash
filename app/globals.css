@@ -857,6 +857,457 @@ a {
   animation: none;
 }
 
+.floating-tool-btn {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  --mag-x: 0px;
+  --mag-y: 0px;
+  transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y)));
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  border: 1px solid #d7c6ff;
+  background: linear-gradient(145deg, #f6efff 0%, #efe8ff 48%, #fbeeff 100%);
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #101317;
+  backdrop-filter: blur(6px);
+  position: fixed;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 220ms ease, box-shadow 260ms ease, border-color 220ms ease, filter 220ms ease;
+  box-shadow:
+    0 0 0 1px #dcc8ff,
+    0 0 0 7px #a47dff24,
+    0 0 24px #9d66ff5c,
+    0 10px 22px #10233c1f;
+  animation: softHalo 2.2s ease-in-out infinite;
+}
+
+.floating-tool-btn span {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.floating-tool-btn small {
+  font-size: 0.66rem;
+  color: #4e5863;
+}
+
+.brow-studio-page {
+  width: min(1120px, calc(100vw - 1.2rem));
+  margin: 1rem auto;
+  padding: 0.4rem 0 5rem;
+}
+
+.brow-studio-head {
+  border: 1px solid #e4eaf1;
+  border-radius: 20px;
+  background: #fcfdff;
+  padding: 1rem;
+}
+
+.brow-studio-back {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 0.9rem;
+  color: #2d3a47;
+  margin-bottom: 0.5rem;
+}
+
+.brow-studio-head h1 {
+  margin: 0;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+}
+
+.brow-studio-head p {
+  margin: 0.4rem 0 0;
+  color: #586371;
+}
+
+.brow-studio-panel {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.brow-upload,
+.brow-controls {
+  border: 1px solid #e4eaf1;
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 0.9rem;
+}
+
+.brow-upload label {
+  display: block;
+  font-size: 0.86rem;
+  color: #4f5963;
+  margin-bottom: 0.35rem;
+}
+
+.brow-upload input[type="file"] {
+  width: 100%;
+}
+
+.brow-dropzone {
+  position: relative;
+  margin-top: 0.3rem;
+  border: 1px dashed #cbd6e2;
+  border-radius: 12px;
+  padding: 1rem 0.8rem;
+  text-align: center;
+  background: #f9fbfd;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.brow-dropzone p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #2e3b48;
+}
+
+.brow-dropzone span {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.77rem;
+  color: #5b6672;
+}
+
+.brow-dropzone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.brow-dropzone.is-dragging {
+  border-color: #598ee8;
+  background: #eaf2ff;
+  box-shadow: 0 8px 20px #2c61d91f;
+  transform: translateY(-1px);
+}
+
+.brow-upload p {
+  margin: 0.7rem 0 0;
+  color: #4f5963;
+}
+
+.brow-upload-preview {
+  margin-top: 0.7rem;
+  border: 1px solid #e1e8f0;
+  border-radius: 10px;
+  background: #f8fbff;
+  padding: 0.55rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.brow-upload-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.brow-upload-preview-head strong {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #334150;
+  word-break: break-all;
+}
+
+.brow-upload-preview-head button {
+  border: 1px solid #d4deea;
+  background: #fff;
+  color: #2f3b48;
+  border-radius: 999px;
+  width: 24px;
+  height: 24px;
+  font-size: 0.82rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.brow-upload-preview img {
+  width: 100%;
+  max-height: 160px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e1e8f0;
+}
+
+.brow-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.brow-full-width-control {
+  grid-column: 1 / -1;
+}
+
+.brow-preset-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.55rem;
+  background: #fafcff;
+}
+
+.brow-preset-title {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  color: #445261;
+  font-weight: 700;
+}
+
+.brow-preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.brow-preset-list button {
+  border: 1px solid #d2dbe7;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 0.34rem 0.65rem;
+  font-size: 0.74rem;
+  cursor: pointer;
+}
+
+.brow-preset-list button.is-active {
+  background: #101317;
+  border-color: #101317;
+  color: #ffffff;
+}
+
+.brow-preset-detail {
+  margin-top: 0.55rem;
+  padding: 0.5rem;
+  border: 1px solid #dce4ef;
+  border-radius: 8px;
+  background: #ffffff;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.brow-preset-detail strong {
+  font-size: 0.8rem;
+  color: #1e2a37;
+}
+
+.brow-preset-detail span {
+  font-size: 0.74rem;
+  color: #4e5b69;
+}
+
+.brow-preset-detail code {
+  font-size: 0.7rem;
+  color: #384656;
+  white-space: normal;
+}
+
+.brow-strong-toggle {
+  border: 1px solid #dbe4ef;
+  border-radius: 10px;
+  background: #f8fbff;
+  padding: 0.55rem;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.brow-strong-toggle button {
+  border: 1px solid #cad6e6;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 0.46rem 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+}
+
+.brow-strong-toggle button.is-active {
+  background: #101317;
+  border-color: #101317;
+  color: #ffffff;
+}
+
+.brow-strong-toggle p {
+  margin: 0;
+  font-size: 0.73rem;
+  color: #506074;
+}
+
+.brow-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.brow-actions button {
+  border: 1px solid #d5dde7;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+}
+
+
+.brow-floating-home-btn {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  --mag-x: 0px;
+  --mag-y: 0px;
+  transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y)));
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  border: 1px solid #b9d7ff;
+  background: linear-gradient(145deg, #ecf5ff 0%, #e9f0ff 48%, #eef9ff 100%);
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #101317;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 220ms ease, box-shadow 260ms ease, border-color 220ms ease, filter 220ms ease;
+  box-shadow:
+    0 0 0 1px #c9dbff,
+    0 0 0 7px #6da8ff24,
+    0 0 24px #5f96ff5c,
+    0 10px 22px #10233c1f;
+  animation: softHaloBlue 2.2s ease-in-out infinite;
+}
+
+.floating-tool-btn::after,
+.brow-floating-home-btn::after {
+  content: "";
+  position: absolute;
+  inset: -32% auto -32% -125%;
+  width: 46%;
+  transform: rotate(20deg);
+  background: linear-gradient(90deg, #ffffff00, #ffffffa6, #ffffff00);
+  transition: transform 620ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.floating-tool-btn > *,
+.brow-floating-home-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.brow-floating-home-btn span {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.brow-floating-home-btn small {
+  font-size: 0.66rem;
+  color: #4e5863;
+}
+
+.brow-compare-panel {
+  margin-top: 0.9rem;
+  border: 1px solid #e4eaf1;
+  border-radius: 16px;
+  background: #fff;
+  padding: 0.9rem;
+}
+
+.brow-compare-panel h2 {
+  margin: 0 0 0.65rem;
+  font-size: 0.9rem;
+  color: #354150;
+}
+
+.brow-compare-canvas-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #f2f5f8;
+  border: 1px solid #dbe4ee;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.brow-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.brow-before-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.brow-canvas-tag {
+  position: absolute;
+  z-index: 3;
+  bottom: 0.8rem;
+  border-radius: 999px;
+  padding: 0.34rem 0.62rem;
+  background: #ffffffdc;
+  border: 1px solid #dbe4ee;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.brow-canvas-tag-left {
+  left: 0.8rem;
+}
+
+.brow-canvas-tag-right {
+  right: 0.8rem;
+}
+
+.brow-compare-divider {
+  position: absolute;
+  inset: 0 auto 0 0;
+  z-index: 4;
+  transform: translateX(-50%);
+}
+
+.brow-compare-line {
+  width: 2px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px #1724362a;
+}
+
+.brow-compare-handle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid #d4deeb;
+  background: #fffffff2;
+  box-shadow: 0 10px 20px #1724362e;
+  cursor: ew-resize;
+  font-size: 1rem;
+}
+
 
 @media (hover: hover) and (pointer: fine) {
   .hero-visual:hover {
@@ -898,6 +1349,32 @@ a {
   .review-panel:hover .review-media::after {
     transform: translateX(540%) rotate(18deg);
   }
+
+  .floating-tool-btn:hover,
+  .brow-floating-home-btn:hover {
+    transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y))) scale(1.07);
+    border-color: #b18bff;
+    filter: saturate(1.08);
+    box-shadow:
+      0 0 0 1px #dcc8ff,
+      0 0 0 10px #a47dff30,
+      0 0 34px #9d66ff80,
+      0 18px 30px #10233c2a;
+  }
+
+  .brow-floating-home-btn:hover {
+    border-color: #78b1ff;
+    box-shadow:
+      0 0 0 1px #c9dbff,
+      0 0 0 10px #6da8ff33,
+      0 0 34px #5f96ff87,
+      0 18px 30px #10233c2a;
+  }
+
+  .floating-tool-btn:hover::after,
+  .brow-floating-home-btn:hover::after {
+    transform: translateX(520%) rotate(20deg);
+  }
 }
 
 .reveal {
@@ -933,6 +1410,42 @@ a {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes softHalo {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #dcc8ff,
+      0 0 0 7px #a47dff24,
+      0 0 20px #9d66ff5c,
+      0 10px 22px #10233c1f;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px #dcc8ff,
+      0 0 0 10px #a47dff30,
+      0 0 30px #9d66ff80,
+      0 10px 22px #10233c1f;
+  }
+}
+
+@keyframes softHaloBlue {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #c9dbff,
+      0 0 0 7px #6da8ff24,
+      0 0 20px #5f96ff5c,
+      0 10px 22px #10233c1f;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px #c9dbff,
+      0 0 0 10px #6da8ff30,
+      0 0 30px #5f96ff80,
+      0 10px 22px #10233c1f;
   }
 }
 
@@ -1034,6 +1547,33 @@ a {
     left: 0.65rem;
     bottom: 0.75rem;
     text-align: center;
+  }
+
+  .floating-tool-btn {
+    top: auto;
+    right: 0.65rem;
+    bottom: 4.8rem;
+    transform: translateX(var(--mag-x)) translateY(var(--mag-y));
+    width: 72px;
+    height: 72px;
+  }
+
+  .brow-floating-home-btn {
+    top: auto;
+    right: 0.65rem;
+    bottom: 4.8rem;
+    transform: translateX(var(--mag-x)) translateY(var(--mag-y));
+    width: 72px;
+    height: 72px;
+  }
+
+  .brow-studio-panel,
+  .brow-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .brow-compare-handle:hover {
+    box-shadow: 0 14px 24px #1724363d;
   }
 
   .floating-chip {
