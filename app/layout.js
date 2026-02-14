@@ -17,21 +17,21 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app"
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "STYLE LASH | 속눈썹 & 뷰티 디자인",
+    default: "STYLE LASH | 눈썹문신 & 반영구 디자인",
     template: "%s | STYLE LASH"
   },
   description:
-    "군포 산본 스타일래쉬. 속눈썹 펌, 브로우/왁싱, 반영구까지 1:1 맞춤 디자인으로 완성하는 STYLE LASH",
+    "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정까지 1:1 맞춤 디자인으로 완성하는 STYLE LASH",
   applicationName: "STYLE LASH",
   keywords: [
     "스타일래쉬",
-    "속눈썹펌",
-    "속눈썹연장",
-    "브로우디자인",
-    "왁싱",
-    "반영구",
-    "군포속눈썹",
-    "산본속눈썹",
+    "눈썹문신",
+    "반영구눈썹",
+    "콤보눈썹",
+    "자연눈썹",
+    "눈썹리터치",
+    "군포눈썹문신",
+    "산본눈썹문신",
     "stylelash_kr"
   ],
   alternates: {
@@ -42,9 +42,9 @@ export const metadata = {
     locale: "ko_KR",
     url: "/",
     siteName: "STYLE LASH",
-    title: "STYLE LASH | 속눈썹 & 뷰티 디자인",
+    title: "STYLE LASH | 눈썹문신 & 반영구 디자인",
     description:
-      "군포 산본 스타일래쉬. 속눈썹, 브로우, 왁싱, 반영구까지 1:1 맞춤 디자인.",
+      "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정까지 1:1 맞춤 디자인.",
     images: [
       {
         url: "/og/main.png",
@@ -62,9 +62,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "STYLE LASH | 속눈썹 & 뷰티 디자인",
+    title: "STYLE LASH | 눈썹문신 & 반영구 디자인",
     description:
-      "군포 산본 스타일래쉬. 속눈썹, 브로우, 왁싱, 반영구 1:1 맞춤 디자인.",
+      "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정 1:1 맞춤 디자인.",
     images: ["/og/main.png"]
   },
   robots: {

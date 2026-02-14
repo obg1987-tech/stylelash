@@ -306,14 +306,16 @@ a {
   border-radius: 22px;
   overflow: hidden;
   margin-bottom: 2.1rem;
+  background: linear-gradient(160deg, #f7f3ef 0%, #f2f6f7 100%);
   box-shadow: 0 18px 40px #183a5330;
   transform-style: preserve-3d;
   transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 320ms ease;
 }
 
 .hero-visual img {
-  object-fit: cover;
-  transform: scale(1.02);
+  object-fit: contain;
+  object-position: center center;
+  transform: scale(1);
   transition: transform 850ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 700ms ease;
 }
 
@@ -421,7 +423,7 @@ a {
 
 .service-media {
   position: relative;
-  height: 240px;
+  height: 340px;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 0.65rem;
@@ -431,8 +433,13 @@ a {
 
 .service-media img {
   object-fit: cover;
+  object-position: center 34%;
   transform: scale(1.02);
   transition: transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 650ms ease;
+}
+
+.service-card--retouch .service-media img {
+  object-position: 0% 28%;
 }
 
 .service-media::after {
@@ -480,6 +487,10 @@ a {
   object-fit: cover;
   transform: scale(1.02);
   transition: transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 650ms ease;
+}
+
+.ba-item-before img {
+  object-position: center 73%;
 }
 
 .ba-grid figure::after {
@@ -612,6 +623,7 @@ a {
 
 .review-media img {
   object-fit: cover;
+  object-position: center 38%;
   transform: scale(1.02);
   transition: transform 760ms cubic-bezier(0.2, 0.7, 0.2, 1), filter 650ms ease;
 }
@@ -721,13 +733,27 @@ a {
   margin: 0.5rem 0 0;
   font-family: var(--font-display), sans-serif;
   letter-spacing: -0.03em;
-  max-width: 25ch;
+  max-width: none;
+  white-space: nowrap;
 }
 
 .contact-actions {
   margin-top: 1rem;
   display: flex;
+  align-items: stretch;
   gap: 0.55rem;
+}
+
+.contact-actions .btn-main,
+.contact-actions .btn-sub {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  text-align: center;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .contact .btn-sub {
@@ -759,7 +785,7 @@ a {
   }
 
   .hero-visual:hover img {
-    transform: scale(1.09);
+    transform: scale(1.01);
     filter: saturate(1.06);
   }
 
@@ -916,7 +942,7 @@ a {
   }
 
   .service-media {
-    height: 205px;
+    height: 280px;
   }
 
   .ba-grid figure {

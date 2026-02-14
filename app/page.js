@@ -9,6 +9,7 @@ const reservationCtaLabel = kakaoChannelUrl
   ? "카카오톡 채널 문의하기"
   : "인스타그램 DM 문의하기";
 const naverPlaceUrl = "https://m.place.naver.com/place/778319613/home";
+const naverReviewUrl = "https://m.place.naver.com/place/778319613/review/visitor";
 const naverMapUrl = "https://map.naver.com/p/entry/place/778319613";
 
 const navItems = [
@@ -21,42 +22,44 @@ const navItems = [
 
 const serviceCards = [
   {
-    title: "Lash Styling",
-    subtitle: "속눈썹 디자인",
-    copy: "눈매와 모질을 고려해 컬과 볼륨을 맞춤 설계합니다.",
-    image: "/assets/service/1.png"
+    title: "Brow Tattoo",
+    subtitle: "눈썹문신 디자인",
+    copy: "골격과 근육 흐름을 고려해 자연스럽고 또렷한 눈썹 라인을 설계합니다.",
+    image: "/assets/service/1.png",
+    className: "service-card--brow-tattoo"
   },
   {
-    title: "Brow Balance",
-    subtitle: "브로우 디자인",
-    copy: "얼굴 비율에 맞춘 정돈된 인상을 제안합니다.",
-    image: "/assets/service/2.png"
+    title: "Retouch & Balance",
+    subtitle: "리터치/보정 디자인",
+    copy: "기존 눈썹 상태와 피부 타입을 반영해 밀도와 결을 정교하게 보정합니다.",
+    image: "/assets/service/2.png",
+    className: "service-card--retouch"
   }
 ];
 
 const serviceHighlights = [
-  "속눈썹 펌 / 연장: 눈매 맞춤 컬 디자인",
-  "브로우 디자인: 얼굴 비율 기반 균형 보정",
-  "왁싱 케어: 피부 민감도 고려한 진정 루틴",
-  "반영구 디자인: 일상 메이크업 시간 단축"
+  "눈썹문신 디자인: 얼굴 비율 기반 맞춤 라인 설계",
+  "결눈썹/콤보눈썹: 인상과 취향에 맞는 표현 방식 제안",
+  "리터치 보정: 유지력과 밀도 밸런스 개선",
+  "반영구 눈썹: 메이크업 시간 단축과 또렷한 인상 완성"
 ];
 
 const priceMenus = [
-  { name: "수분영양펌", price: "35,000원" },
-  { name: "블랙틴트펌", price: "40,000원" },
-  { name: "프리미엄 복구펌", price: "50,000원" }
+  { name: "자연눈썹", price: "문의" },
+  { name: "콤보눈썹", price: "문의" },
+  { name: "리터치 보정", price: "문의" }
 ];
 
 const process = [
-  "상담: 현재 눈매/피부 상태, 원하는 무드 체크",
-  "디자인: 얼굴 비율에 맞춘 맞춤 디자인 제안",
+  "상담: 기존 눈썹 상태/피부 타입/원하는 인상 체크",
+  "디자인: 골격과 비율에 맞춘 맞춤 눈썹 라인 제안",
   "시술: 위생 기준 기반의 섬세한 진행",
-  "애프터케어: 유지 기간과 홈케어 안내"
+  "애프터케어: 탈각/착색 단계별 관리법 안내"
 ];
 
 const businessInfo = [
   { label: "상호", value: "스타일래쉬 (STYLE LASH)" },
-  { label: "업종", value: "속눈썹증모, 연장" },
+  { label: "업종", value: "눈썹문신/반영구" },
   { label: "대표 연락처", value: "0507-1405-3087" },
   { label: "예약 채널", value: "인스타그램 DM @stylelash_kr" },
   { label: "운영시간", value: "매일 11:00 - 21:00" },
@@ -68,15 +71,15 @@ const businessInfo = [
 const faqItems = [
   {
     q: "처음 방문인데 어떤 시술이 맞는지 모르겠어요.",
-    a: "사전 상담에서 눈매, 모질, 평소 메이크업 습관을 확인한 뒤 가장 자연스러운 방향으로 안내드립니다."
+    a: "사전 상담에서 골격, 기존 눈썹 상태, 평소 메이크업 습관을 확인한 뒤 가장 자연스러운 눈썹문신 방향으로 안내드립니다."
   },
   {
     q: "예약은 어떻게 진행되나요?",
     a: "인스타그램 DM으로 성함, 희망 날짜/시간, 희망 시술을 보내주시면 가능한 슬롯을 안내드립니다."
   },
   {
-    q: "시술 후 바로 세안 가능한가요?",
-    a: "시술별 주의사항이 다르며, 당일 관리법은 시술 후 안내해드립니다. 유지력에 직접 영향을 주니 꼭 지켜주세요."
+    q: "눈썹문신 후 관리가 중요한가요?",
+    a: "초기 탈각 기간 관리가 착색 결과에 직접 영향을 줍니다. 세안/보습/주의사항은 시술 직후 상세히 안내해드립니다."
   }
 ];
 
@@ -110,7 +113,7 @@ const localBusinessJsonLd = {
       closes: "21:00"
     }
   ],
-  keywords: ["속눈썹증모", "속눈썹연장", "브로우", "왁싱", "반영구"]
+  keywords: ["눈썹문신", "반영구눈썹", "콤보눈썹", "자연눈썹", "산본눈썹문신"]
 };
 
 export default function Home() {
@@ -161,8 +164,8 @@ export default function Home() {
               Effortless Beauty.
             </h1>
             <p>
-              부드러운 움직임과 선명한 결과. 스타일래쉬는 속눈썹과 브로우 디자인을
-              더 가볍고 세련된 일상 루틴으로 바꿉니다.
+              부드러운 인상 변화와 선명한 결과. 스타일래쉬는 눈썹문신 디자인을
+              더 자연스럽고 세련된 일상 루틴으로 완성합니다.
             </p>
             <div className="hero-actions">
               <a href="#pricing" className="btn-main">
@@ -214,7 +217,11 @@ export default function Home() {
           </div>
           <div className="service-grid">
             {serviceCards.map((card) => (
-              <article key={card.title} className="service-card reveal" data-magnetic="true">
+              <article
+                key={card.title}
+                className={`service-card ${card.className || ""} reveal`}
+                data-magnetic="true"
+              >
                 <div className="service-media">
                   <Image
                     src={card.image}
@@ -238,7 +245,7 @@ export default function Home() {
             <h2>자연스럽게, 확실하게</h2>
           </div>
           <div className="ba-grid">
-            <figure className="reveal" data-magnetic="true">
+            <figure className="ba-item ba-item-before reveal" data-magnetic="true">
               <Image
                 src="/assets/before-after/1.png"
                 alt="시술 전 이미지"
@@ -248,7 +255,7 @@ export default function Home() {
               />
               <figcaption>Before</figcaption>
             </figure>
-            <figure className="reveal" data-magnetic="true">
+            <figure className="ba-item ba-item-after reveal" data-magnetic="true">
               <Image
                 src="/assets/before-after/2.png"
                 alt="시술 후 이미지"
@@ -307,7 +314,7 @@ export default function Home() {
             <div className="review-copy">
               <p>네이버 기준 리뷰</p>
               <strong>방문자리뷰 18 · 블로그리뷰 43</strong>
-              <a href={naverPlaceUrl} target="_blank" rel="noreferrer">
+              <a href={naverReviewUrl} target="_blank" rel="noreferrer">
                 네이버 플레이스 보기
               </a>
             </div>
@@ -345,7 +352,7 @@ export default function Home() {
 
         <section className="contact" id="contact">
           <p className="eyebrow">Contact</p>
-          <h2>원하는 날짜를 보내주시면 빠르게 안내드릴게요.</h2>
+          <h2>원하시는 날짜를 보내주시면 빠르게 예약 안내드릴게요.</h2>
           <div className="contact-actions">
             <a href={reservationUrl} target="_blank" rel="noreferrer" className="btn-main">
               인스타그램 DM 예약
