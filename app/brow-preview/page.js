@@ -135,13 +135,33 @@ export default function BrowPreviewPage() {
 
         <section
           style={{
-            border: "1px solid #d7e1ec",
+            border: "1px solid #cfdcff",
+            borderLeft: "6px solid #4f78ff",
             borderRadius: "12px",
-            background: "linear-gradient(145deg, #f8faff 0%, #f1f6ff 100%)",
-            padding: "0.78rem 0.9rem"
+            background: "linear-gradient(145deg, #f4f7ff 0%, #edf3ff 100%)",
+            padding: "0.95rem 1rem"
           }}
         >
-          <p style={{ margin: 0, color: "#3d4d63", lineHeight: 1.6, fontSize: "0.9rem" }}>
+          <p
+            style={{
+              margin: 0,
+              color: "#2b3e66",
+              fontWeight: 800,
+              letterSpacing: "0.02em",
+              fontSize: "0.82rem"
+            }}
+          >
+            NOTICE
+          </p>
+          <p
+            style={{
+              margin: "0.35rem 0 0",
+              color: "#1f2f4f",
+              lineHeight: 1.62,
+              fontSize: "1.12rem",
+              fontWeight: 700
+            }}
+          >
             프리미엄 브로우 프리뷰가 곧 오픈됩니다. 현재는 마지막 품질 튜닝 단계로, 정식 출시 후 더 정교한
             스타일 시뮬레이션을 바로 경험하실 수 있습니다.
           </p>
