@@ -59,10 +59,10 @@ const reservationProcess = [
 const businessInfo = [
   { label: "상호", value: "STYLE LASH" },
   { label: "업종", value: "Eyebrow Tattoo / Retouch" },
+  { label: "주소", value: "경기 군포시 고산로 23번길 4-21 미성빌딩 3층" },
   { label: "전화", value: "0507-1405-3087" },
   { label: "운영시간", value: "매일 11:00 - 21:00" },
-  { label: "휴무", value: "공휴일" },
-  { label: "주소", value: "경기 군포시 고산로 23번길 4-21 미성빌딩 3층" }
+  { label: "휴무", value: "공휴일" }
 ];
 
 const faqItems = [
