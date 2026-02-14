@@ -29,10 +29,7 @@ export default function CommunityBoardClient() {
     content: ""
   });
 
-  const canSubmit = useMemo(
-    () => form.nickname.trim().length >= 2 && form.content.trim().length >= 8 && !submitting,
-    [form, submitting]
-  );
+  const canSubmit = useMemo(() => !submitting && configured, [submitting, configured]);
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -55,6 +52,23 @@ export default function CommunityBoardClient() {
 
   const submit = async (event) => {
     event.preventDefault();
+    const nickname = form.nickname.trim();
+    const content = form.content.trim();
+    const rating = Number(form.rating);
+
+    if (nickname.length < 2) {
+      setMessage("Nickname must be at least 2 characters.");
+      return;
+    }
+    if (content.length < 8) {
+      setMessage("Review content must be at least 8 characters.");
+      return;
+    }
+    if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
+      setMessage("Rating must be between 1 and 5.");
+      return;
+    }
+
     if (!canSubmit) return;
     setSubmitting(true);
     setMessage("");
@@ -64,9 +78,9 @@ export default function CommunityBoardClient() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nickname: form.nickname.trim(),
-          rating: Number(form.rating),
-          content: form.content.trim()
+          nickname,
+          rating,
+          content
         })
       });
       const payload = await response.json();
