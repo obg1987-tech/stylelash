@@ -7,8 +7,8 @@ const instagramUrl = "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dW
 const kakaoChannelUrl = "";
 const reservationUrl = kakaoChannelUrl || instagramUrl;
 const reservationCtaLabel = kakaoChannelUrl
-  ? "카카?�톡 채널 문의?�기"
-  : "?�스?�그램 DM 문의?�기";
+  ? "移댁뭅?ㅽ넚 梨꾨꼸 臾몄쓽?섍린"
+  : "?몄뒪?洹몃옩 DM 臾몄쓽?섍린";
 const naverPlaceUrl = "https://m.place.naver.com/place/778319613/home";
 const naverReviewUrl = "https://m.place.naver.com/place/778319613/review/visitor";
 const naverMapUrl = "https://map.naver.com/p/entry/place/778319613";
@@ -25,63 +25,63 @@ const navItems = [
 const serviceCards = [
   {
     title: "Brow Tattoo",
-    subtitle: "?�썹문신 ?�자??,
-    copy: "골격�?근육 ?�름??고려???�연?�럽�??�렷???�썹 ?�인???�계?�니??",
+    subtitle: "?덉뜾臾몄떊 ?붿옄??,
+    copy: "怨④꺽怨?洹쇱쑁 ?먮쫫??怨좊젮???먯뿰?ㅻ읇怨??먮졆???덉뜾 ?쇱씤???ㅺ퀎?⑸땲??",
     image: "/assets/service/1.png",
     className: "service-card--brow-tattoo"
   },
   {
     title: "Retouch & Balance",
-    subtitle: "리터�?보정 ?�자??,
-    copy: "기존 ?�썹 ?�태?� ?��? ?�?�을 반영??밀?��? 결을 ?�교?�게 보정?�니??",
+    subtitle: "由ы꽣移?蹂댁젙 ?붿옄??,
+    copy: "湲곗〈 ?덉뜾 ?곹깭? ?쇰? ??낆쓣 諛섏쁺??諛?꾩? 寃곗쓣 ?뺢탳?섍쾶 蹂댁젙?⑸땲??",
     image: "/assets/service/2.png",
     className: "service-card--retouch"
   }
 ];
 
 const serviceHighlights = [
-  "?�썹문신 ?�자?? ?�굴 비율 기반 맞춤 ?�인 ?�계",
-  "결눈??콤보?�썹: ?�상�?취향??맞는 ?�현 방식 ?�안",
-  "리터�?보정: ?��??�과 밀??밸런??개선",
-  "반영�??�썹: 메이?�업 ?�간 ?�축�??�렷???�상 ?�성"
+  "?덉뜾臾몄떊 ?붿옄?? ?쇨뎬 鍮꾩쑉 湲곕컲 留욎땄 ?쇱씤 ?ㅺ퀎",
+  "寃곕늿??肄ㅻ낫?덉뜾: ?몄긽怨?痍⑦뼢??留욌뒗 ?쒗쁽 諛⑹떇 ?쒖븞",
+  "由ы꽣移?蹂댁젙: ?좎??κ낵 諛??諛몃윴??媛쒖꽑",
+  "諛섏쁺援??덉뜾: 硫붿씠?ъ뾽 ?쒓컙 ?⑥텞怨??먮졆???몄긽 ?꾩꽦"
 ];
 
 const priceMenus = [
-  { name: "?�연?�썹", price: "문의" },
-  { name: "콤보?�썹", price: "문의" },
-  { name: "리터�?보정", price: "문의" }
+  { name: "?먯뿰?덉뜾", price: "臾몄쓽" },
+  { name: "肄ㅻ낫?덉뜾", price: "臾몄쓽" },
+  { name: "由ы꽣移?蹂댁젙", price: "臾몄쓽" }
 ];
 
 const reservationProcess = [
-  "?�담: 기존 ?�썹 ?�태/?��? ?�???�하???�상 체크",
-  "?�자?? 골격�?비율??맞춘 맞춤 ?�썹 ?�인 ?�안",
-  "?�술: ?�생 기�? 기반???�세??진행",
-  "?�프?��??? ?�각/착색 ?�계�?관리법 ?�내"
+  "?곷떞: 湲곗〈 ?덉뜾 ?곹깭/?쇰? ????먰븯???몄긽 泥댄겕",
+  "?붿옄?? 怨④꺽怨?鍮꾩쑉??留욎텣 留욎땄 ?덉뜾 ?쇱씤 ?쒖븞",
+  "?쒖닠: ?꾩깮 湲곗? 湲곕컲???ъ꽭??吏꾪뻾",
+  "?좏봽?곗??? ?덇컖/李⑹깋 ?④퀎蹂?愿由щ쾿 ?덈궡"
 ];
 
 const businessInfo = [
-  { label: "?�호", value: "?��??�래??(STYLE LASH)" },
-  { label: "?�종", value: "?�썹문신/반영�? },
-  { label: "?�???�락�?, value: "0507-1405-3087" },
-  { label: "?�약 채널", value: "?�스?�그램 DM @stylelash_kr" },
-  { label: "?�영?�간", value: "매일 11:00 - 21:00" },
-  { label: "?�무", value: "공휴?? },
-  { label: "?�로�?주소", value: "경기 군포???�본�?23번길 4-21 미성빌딩 3�? },
-  { label: "지�?주소", value: "경기 군포???�본??1131-1" }
+  { label: "?곹샇", value: "?ㅽ??쇰옒??(STYLE LASH)" },
+  { label: "?낆쥌", value: "?덉뜾臾몄떊/諛섏쁺援? },
+  { label: "????곕씫泥?, value: "0507-1405-3087" },
+  { label: "?덉빟 梨꾨꼸", value: "?몄뒪?洹몃옩 DM @stylelash_kr" },
+  { label: "?댁쁺?쒓컙", value: "留ㅼ씪 11:00 - 21:00" },
+  { label: "?대Т", value: "怨듯쑕?? },
+  { label: "?꾨줈紐?二쇱냼", value: "寃쎄린 援고룷???곕낯濡?23踰덇만 4-21 誘몄꽦鍮뚮뵫 3痢? },
+  { label: "吏踰?二쇱냼", value: "寃쎄린 援고룷???곕낯??1131-1" }
 ];
 
 const faqItems = [
   {
-    q: "처음 방문?�데 ?�떤 ?�술??맞는지 모르겠어??",
-    a: "?�전 ?�담?�서 골격, 기존 ?�썹 ?�태, ?�소 메이?�업 ?��????�인????가???�연?�러???�썹문신 방향?�로 ?�내?�립?�다."
+    q: "泥섏쓬 諛⑸Ц?몃뜲 ?대뼡 ?쒖닠??留욌뒗吏 紐⑤Ⅴ寃좎뼱??",
+    a: "?ъ쟾 ?곷떞?먯꽌 怨④꺽, 湲곗〈 ?덉뜾 ?곹깭, ?됱냼 硫붿씠?ъ뾽 ?듦????뺤씤????媛???먯뿰?ㅻ윭???덉뜾臾몄떊 諛⑺뼢?쇰줈 ?덈궡?쒕┰?덈떎."
   },
   {
-    q: "?�약?� ?�떻�?진행?�나??",
-    a: "?�스?�그램 DM?�로 ?�함, ?�망 ?�짜/?�간, ?�망 ?�술??보내주시�?가?�한 ?�롯???�내?�립?�다."
+    q: "?덉빟? ?대뼸寃?吏꾪뻾?섎굹??",
+    a: "?몄뒪?洹몃옩 DM?쇰줈 ?깊븿, ?щ쭩 ?좎쭨/?쒓컙, ?щ쭩 ?쒖닠??蹂대궡二쇱떆硫?媛?ν븳 ?щ’???덈궡?쒕┰?덈떎."
   },
   {
-    q: "?�썹문신 ??관리�? 중요?��???",
-    a: "초기 ?�각 기간 관리�? 착색 결과??직접 ?�향??줍니?? ?�안/보습/주의?�항?� ?�술 직후 ?�세???�내?�드립니??"
+    q: "?덉뜾臾몄떊 ??愿由ш? 以묒슂?쒓???",
+    a: "珥덇린 ?덇컖 湲곌컙 愿由ш? 李⑹깋 寃곌낵??吏곸젒 ?곹뼢??以띾땲?? ?몄븞/蹂댁뒿/二쇱쓽?ы빆? ?쒖닠 吏곹썑 ?곸꽭???덈궡?대뱶由쎈땲??"
   }
 ];
 
@@ -89,16 +89,16 @@ const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "BeautySalon",
   "@id": `${siteUrl}#beautysalon`,
-  name: "?��??�래??,
+  name: "?ㅽ??쇰옒??,
   image: `${siteUrl}/assets/hero/1.png`,
   url: siteUrl,
   telephone: "+82-507-1405-3087",
   sameAs: [instagramUrl, naverPlaceUrl, naverReviewUrl],
   address: {
     "@type": "PostalAddress",
-    streetAddress: "?�본�?23번길 4-21 미성빌딩 3�?,
-    addressLocality: "군포??,
-    addressRegion: "경기??,
+    streetAddress: "?곕낯濡?23踰덇만 4-21 誘몄꽦鍮뚮뵫 3痢?,
+    addressLocality: "援고룷??,
+    addressRegion: "寃쎄린??,
     addressCountry: "KR"
   },
   openingHoursSpecification: [
@@ -117,8 +117,8 @@ const localBusinessJsonLd = {
       closes: "21:00"
     }
   ],
-  priceRange: "?�₩",
-  keywords: ["?�썹문신", "반영구눈??, "콤보?�썹", "?�연?�썹", "?�본?�썹문신"]
+  priceRange: "?⒱궔",
+  keywords: ["?덉뜾臾몄떊", "諛섏쁺援щ늿??, "肄ㅻ낫?덉뜾", "?먯뿰?덉뜾", "?곕낯?덉뜾臾몄떊"]
 };
 
 export default function Home() {
@@ -137,11 +137,11 @@ export default function Home() {
             ))}
           </nav>
           <a href={reservationUrl} target="_blank" rel="noreferrer" className="nav-cta">
-            ?�약문의
+            ?덉빟臾몄쓽
           </a>
         </div>
         <details className="mobile-menu">
-          <summary aria-label="메뉴 ?�기">Menu</summary>
+          <summary aria-label="硫붾돱 ?닿린">Menu</summary>
           <div className="mobile-menu-panel">
             {navItems.map((item) => (
               <a key={item.href} href={item.href}>
@@ -149,7 +149,7 @@ export default function Home() {
               </a>
             ))}
             <a href={reservationUrl} target="_blank" rel="noreferrer">
-              ?�약문의
+              ?덉빟臾몄쓽
             </a>
           </div>
         </details>
@@ -170,15 +170,15 @@ export default function Home() {
               Effortless Beauty.
             </h1>
             <p>
-              부?�러???�상 변?��? ?�명??결과. ?��??�래?�는 ?�썹문신 ?�자?�을 ???�연?�럽�??�련???�상
-              루틴?�로 ?�성?�니??
+              遺?쒕윭???몄긽 蹂?붿? ?좊챸??寃곌낵. ?ㅽ??쇰옒?щ뒗 ?덉뜾臾몄떊 ?붿옄?몄쓣 ???먯뿰?ㅻ읇怨??몃젴???쇱긽
+              猷⑦떞?쇰줈 ?꾩꽦?⑸땲??
             </p>
             <div className="hero-actions">
               <a href="#pricing" className="btn-main">
-                가�?보기
+                媛寃?蹂닿린
               </a>
               <a href="#contact" className="btn-sub">
-                ?�약 방법
+                ?덉빟 諛⑸쾿
               </a>
             </div>
             <div className="hero-metrics">
@@ -192,14 +192,14 @@ export default function Home() {
               </article>
               <article>
                 <span>Closed</span>
-                <strong>공휴??/strong>
+                <strong>怨듯쑕??/strong>
               </article>
             </div>
           </div>
           <div className="hero-visual reveal">
             <Image
               src="/assets/hero/1.png"
-              alt="STYLE LASH 메인 비주??
+              alt="STYLE LASH 硫붿씤 鍮꾩＜??
               fill
               priority
               quality={84}
@@ -214,7 +214,7 @@ export default function Home() {
         <section className="services" id="services">
           <div className="section-head reveal">
             <p>Services</p>
-            <h2>?�선??머무???�테??/h2>
+            <h2>?쒖꽑??癒몃Т???뷀뀒??/h2>
           </div>
           <div className="service-highlights reveal">
             {serviceHighlights.map((item) => (
@@ -227,7 +227,7 @@ export default function Home() {
                 <div className="service-media">
                   <Image
                     src={card.image}
-                    alt={`${card.subtitle} ?�술 ?��?지`}
+                    alt={`${card.subtitle} ?쒖닠 ?대?吏`}
                     fill
                     quality={78}
                     sizes="(max-width: 800px) 100vw, 50vw"
@@ -244,7 +244,7 @@ export default function Home() {
         <section className="ba-section" id="before-after">
           <div className="section-head reveal">
             <p>Before / After</p>
-            <h2>?�연?�럽�? ?�실?�게</h2>
+            <h2>?먯뿰?ㅻ읇寃? ?뺤떎?섍쾶</h2>
           </div>
           <BeforeAfterSlider />
         </section>
@@ -253,9 +253,9 @@ export default function Home() {
           <div className="pricing-left reveal">
             <div className="section-head">
               <p>Pricing</p>
-              <h2>?�술 메뉴 / 가�?/h2>
+              <h2>?쒖닠 硫붾돱 / 媛寃?/h2>
             </div>
-            <p className="price-note">가�?기�?: 2026-02-14 ?�이�??�레?�스 공개 ?�보 (변??가??</p>
+            <p className="price-note">媛寃?湲곗?: 2026-02-14 ?ㅼ씠踰??뚮젅?댁뒪 怨듦컻 ?뺣낫 (蹂??媛??</p>
           </div>
           <div className="pricing-table reveal">
             {priceMenus.map((menu) => (
@@ -270,7 +270,7 @@ export default function Home() {
         <section className="info" id="info">
           <div className="section-head reveal">
             <p>Shop Info</p>
-            <h2>매장 ?�보</h2>
+            <h2>留ㅼ옣 ?뺣낫</h2>
           </div>
           <div className="info-grid">
             {businessInfo.map((item) => (
@@ -282,16 +282,16 @@ export default function Home() {
           </div>
           <div className="review-panel reveal">
             <div className="review-media">
-              <Image src="/assets/review/1.png" alt="고객 리뷰 무드 ?��?지" fill quality={72} sizes="100vw" />
+              <Image src="/assets/review/1.png" alt="怨좉컼 由щ럭 臾대뱶 ?대?吏" fill quality={72} sizes="100vw" />
             </div>
             <div className="review-copy">
-              <p>?�이�?기�? 리뷰</p>
-              <strong>방문?�리�?18 · 블로그리�?43</strong>
+              <p>?ㅼ씠踰?湲곗? 由щ럭</p>
+              <strong>諛⑸Ц?먮━酉?18 쨌 釉붾줈洹몃━酉?43</strong>
               <a href={naverReviewUrl} target="_blank" rel="noreferrer">
-                ?�이�??�레?�스 보기
+                ?ㅼ씠踰??뚮젅?댁뒪 蹂닿린
               </a>
               <a href={communityUrl} className="review-board-link">
-                �ı� �Խ��� �ٷΰ���
+                후기 게시판 바로가기
               </a>
             </div>
           </div>
@@ -300,7 +300,7 @@ export default function Home() {
         <section className="experience">
           <div className="section-head reveal">
             <p>Flow</p>
-            <h2>?�약 ?�로?�스</h2>
+            <h2>?덉빟 ?꾨줈?몄뒪</h2>
           </div>
           <ol className="timeline">
             {reservationProcess.map((step) => (
@@ -314,7 +314,7 @@ export default function Home() {
         <section className="faq-section">
           <div className="section-head reveal">
             <p>FAQ</p>
-            <h2>?�주 묻는 질문</h2>
+            <h2>?먯＜ 臾삳뒗 吏덈Ц</h2>
           </div>
           <div className="faq-list">
             {faqItems.map((item) => (
@@ -328,13 +328,13 @@ export default function Home() {
 
         <section className="contact" id="contact">
           <p className="eyebrow">Contact</p>
-          <h2>?�하?�는 ?�짜�?보내주시�?빠르�??�약 ?�내?�릴게요.</h2>
+          <h2>?먰븯?쒕뒗 ?좎쭨瑜?蹂대궡二쇱떆硫?鍮좊Ⅴ寃??덉빟 ?덈궡?쒕┫寃뚯슂.</h2>
           <div className="contact-actions">
             <a href={reservationUrl} target="_blank" rel="noreferrer" className="btn-main">
               {reservationCtaLabel}
             </a>
             <a href={naverMapUrl} target="_blank" rel="noreferrer" className="btn-sub">
-              ?�이�?지???�치 ?�인
+              ?ㅼ씠踰?吏???꾩튂 ?뺤씤
             </a>
           </div>
         </section>
