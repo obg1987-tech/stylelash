@@ -1,5 +1,6 @@
 ﻿import Image from "next/image";
 import MagneticLayer from "./magnetic-layer";
+import BeforeAfterSlider from "./before-after-slider";
 
 const instagramUrl =
   "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
@@ -16,8 +17,7 @@ const navItems = [
   { label: "서비스", href: "#services" },
   { label: "전후사진", href: "#before-after" },
   { label: "가격", href: "#pricing" },
-  { label: "매장정보", href: "#info" },
-  { label: "문의", href: "#contact" }
+  { label: "매장정보", href: "#info" }
 ];
 
 const serviceCards = [
@@ -123,13 +123,18 @@ export default function Home() {
         <a className="brand" href="#home">
           STYLE LASH
         </a>
-        <nav>
-          {navItems.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        <div className="nav-desktop">
+          <nav className="nav-group nav-main">
+            {navItems.map((item) => (
+              <a key={item.href} href={item.href}>
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          <a href={reservationUrl} target="_blank" rel="noreferrer" className="nav-cta">
+            예약문의
+          </a>
+        </div>
         <details className="mobile-menu">
           <summary aria-label="메뉴 열기">Menu</summary>
           <div className="mobile-menu-panel">
@@ -143,9 +148,6 @@ export default function Home() {
             </a>
           </div>
         </details>
-        <a href={reservationUrl} target="_blank" rel="noreferrer" className="nav-cta">
-          예약문의
-        </a>
       </header>
 
       <main className="site-main">
@@ -244,28 +246,7 @@ export default function Home() {
             <p>Before / After</p>
             <h2>자연스럽게, 확실하게</h2>
           </div>
-          <div className="ba-grid">
-            <figure className="ba-item ba-item-before reveal" data-magnetic="true">
-              <Image
-                src="/assets/before-after/1.png"
-                alt="시술 전 이미지"
-                fill
-                quality={74}
-                sizes="(max-width: 800px) 100vw, 50vw"
-              />
-              <figcaption>Before</figcaption>
-            </figure>
-            <figure className="ba-item ba-item-after reveal" data-magnetic="true">
-              <Image
-                src="/assets/before-after/2.png"
-                alt="시술 후 이미지"
-                fill
-                quality={74}
-                sizes="(max-width: 800px) 100vw, 50vw"
-              />
-              <figcaption>After</figcaption>
-            </figure>
-          </div>
+          <BeforeAfterSlider />
         </section>
 
         <section className="pricing" id="pricing">

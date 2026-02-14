@@ -1,4 +1,4 @@
-﻿import { Plus_Jakarta_Sans, Noto_Sans_KR } from "next/font/google";
+﻿import { Plus_Jakarta_Sans, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
 
 const display = Plus_Jakarta_Sans({
@@ -10,6 +10,12 @@ const body = Noto_Sans_KR({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
   variable: "--font-body"
+});
+
+const navSerif = Noto_Serif_KR({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-nav"
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
@@ -84,8 +90,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={`${display.variable} ${body.variable}`}>{children}</body>
+      <body className={`${display.variable} ${body.variable} ${navSerif.variable}`}>{children}</body>
     </html>
   );
 }
-
