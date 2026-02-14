@@ -35,7 +35,10 @@ export async function GET() {
 
 export async function POST(request) {
   if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    return NextResponse.json(
+      { error: "Supabase environment variables are missing. Set URL and keys first." },
+      { status: 503 }
+    );
   }
 
   const supabase = getSupabaseServerClient();
@@ -49,13 +52,13 @@ export async function POST(request) {
   const rating = Number(body?.rating || 0);
 
   if (!nickname || nickname.length < 2) {
-    return NextResponse.json({ error: "닉네임은 2자 이상 입력해 주세요." }, { status: 400 });
+    return NextResponse.json({ error: "Nickname must be at least 2 characters." }, { status: 400 });
   }
   if (!content || content.length < 8) {
-    return NextResponse.json({ error: "후기는 8자 이상 입력해 주세요." }, { status: 400 });
+    return NextResponse.json({ error: "Review content must be at least 8 characters." }, { status: 400 });
   }
   if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
-    return NextResponse.json({ error: "별점은 1~5 사이로 선택해 주세요." }, { status: 400 });
+    return NextResponse.json({ error: "Rating must be between 1 and 5." }, { status: 400 });
   }
 
   const { data, error } = await supabase
@@ -75,4 +78,3 @@ export async function POST(request) {
 
   return NextResponse.json({ post: data }, { status: 201 });
 }
-

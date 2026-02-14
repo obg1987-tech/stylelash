@@ -39,11 +39,11 @@ export default function CommunityBoardClient() {
     try {
       const response = await fetch("/api/community/posts", { cache: "no-store" });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload?.error || "게시글을 불러오지 못했습니다.");
+      if (!response.ok) throw new Error(payload?.error || "Failed to load posts.");
       setConfigured(payload.configured !== false);
       setPosts(Array.isArray(payload.posts) ? payload.posts : []);
     } catch (error) {
-      setMessage(error.message || "게시글을 불러오지 못했습니다.");
+      setMessage(error.message || "Failed to load posts.");
     } finally {
       setLoading(false);
     }
@@ -58,6 +58,7 @@ export default function CommunityBoardClient() {
     if (!canSubmit) return;
     setSubmitting(true);
     setMessage("");
+
     try {
       const response = await fetch("/api/community/posts", {
         method: "POST",
@@ -69,12 +70,12 @@ export default function CommunityBoardClient() {
         })
       });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload?.error || "등록에 실패했습니다.");
-      setMessage("후기가 등록되었습니다.");
+      if (!response.ok) throw new Error(payload?.error || "Failed to register review.");
+      setMessage("Review submitted successfully.");
       setForm({ nickname: "", rating: "5", content: "" });
       await fetchPosts();
     } catch (error) {
-      setMessage(error.message || "등록에 실패했습니다.");
+      setMessage(error.message || "Failed to register review.");
     } finally {
       setSubmitting(false);
     }
@@ -83,74 +84,73 @@ export default function CommunityBoardClient() {
   return (
     <main className="community-page">
       <header className="community-head">
-        <Link href="/" className="community-back">← Back to Home</Link>
-        <h1>후기 게시판</h1>
-        <p>실제 방문 후기를 남기고, 다른 고객들의 경험을 확인해보세요.</p>
+        <Link href="/" className="community-back">
+          ← Back to Home
+        </Link>
+        <h1>Community Board</h1>
+        <p>Leave your review and check real customer feedback.</p>
       </header>
 
       <section className="community-grid">
         <article className="community-card">
-          <h2>후기 작성</h2>
+          <h2>Write a Review</h2>
           {!configured ? (
             <p className="community-hint">
-              Supabase 환경변수가 설정되지 않았습니다. 설정 후 등록 기능이 활성화됩니다.
+              Supabase is not configured yet. Set `NEXT_PUBLIC_SUPABASE_URL` and keys in Vercel and `.env.local`.
             </p>
           ) : null}
           <form onSubmit={submit} className="community-form">
             <label>
-              닉네임
+              Nickname
               <input
                 type="text"
                 value={form.nickname}
                 minLength={2}
                 maxLength={24}
                 onChange={(e) => setForm((prev) => ({ ...prev, nickname: e.target.value }))}
-                placeholder="예: 브로우맛집"
+                placeholder="Example: BrowLover"
               />
             </label>
             <label>
-              별점
-              <select
-                value={form.rating}
-                onChange={(e) => setForm((prev) => ({ ...prev, rating: e.target.value }))}
-              >
-                <option value="5">5점</option>
-                <option value="4">4점</option>
-                <option value="3">3점</option>
-                <option value="2">2점</option>
-                <option value="1">1점</option>
+              Rating
+              <select value={form.rating} onChange={(e) => setForm((prev) => ({ ...prev, rating: e.target.value }))}>
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
               </select>
             </label>
             <label>
-              후기 내용
+              Review
               <textarea
                 value={form.content}
                 minLength={8}
                 maxLength={1000}
                 onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
-                placeholder="시술 만족도, 분위기, 결과 등을 자유롭게 남겨주세요."
+                placeholder="Tell us about your result, design, and overall experience."
                 rows={5}
               />
             </label>
             <button type="submit" disabled={!canSubmit || !configured}>
-              {submitting ? "등록 중..." : "후기 등록"}
+              {submitting ? "Submitting..." : "Submit Review"}
             </button>
           </form>
           {message ? <p className="community-message">{message}</p> : null}
         </article>
 
         <article className="community-card">
-          <h2>최신 후기</h2>
-          {loading ? <p className="community-hint">불러오는 중...</p> : null}
-          {!loading && posts.length === 0 ? (
-            <p className="community-hint">아직 등록된 후기가 없습니다.</p>
-          ) : null}
+          <h2>Latest Reviews</h2>
+          {loading ? <p className="community-hint">Loading...</p> : null}
+          {!loading && posts.length === 0 ? <p className="community-hint">No reviews yet.</p> : null}
           <div className="community-post-list">
             {posts.map((post) => (
               <section key={post.id} className="community-post">
                 <header>
                   <strong>{post.nickname}</strong>
-                  <span><Stars value={post.rating} /></span>
+                  <span>
+                    <Stars value={post.rating} />
+                  </span>
                 </header>
                 <p>{post.content}</p>
                 <small>{formatDate(post.created_at)}</small>
@@ -162,4 +162,3 @@ export default function CommunityBoardClient() {
     </main>
   );
 }
-
