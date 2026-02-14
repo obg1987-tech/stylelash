@@ -166,6 +166,10 @@ export default function BrowPreviewPage() {
             스타일 시뮬레이션을 바로 경험하실 수 있습니다.
           </p>
         </section>
+        <Link href="/" className="brow-floating-home-btn" aria-label="Go to home">
+          <span>Home</span>
+          <small>Back</small>
+        </Link>
       </main>
     );
   }
