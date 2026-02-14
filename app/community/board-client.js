@@ -113,7 +113,7 @@ export default function CommunityBoardClient() {
     <main className="community-page">
       <header className="community-head">
         <Link href="/" className="community-back">
-          ← 홈으로 돌아가기
+          ← Back to Home
         </Link>
         <h1>후기 게시판</h1>
         <p>실제 시술 후기를 남기고, 다른 고객의 경험도 확인해 보세요.</p>
