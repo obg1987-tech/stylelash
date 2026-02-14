@@ -3,7 +3,13 @@ import MagneticLayer from "./magnetic-layer";
 
 const instagramUrl =
   "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
+const kakaoChannelUrl = "";
+const reservationUrl = kakaoChannelUrl || instagramUrl;
+const reservationCtaLabel = kakaoChannelUrl
+  ? "카카오톡 채널 문의하기"
+  : "인스타그램 DM 문의하기";
 const naverPlaceUrl = "https://m.place.naver.com/place/778319613/home";
+const naverMapUrl = "https://map.naver.com/p/entry/place/778319613";
 
 const navItems = [
   { label: "서비스", href: "#services" },
@@ -129,12 +135,12 @@ export default function Home() {
                 {item.label}
               </a>
             ))}
-            <a href={instagramUrl} target="_blank" rel="noreferrer">
+            <a href={reservationUrl} target="_blank" rel="noreferrer">
               예약문의
             </a>
           </div>
         </details>
-        <a href={instagramUrl} target="_blank" rel="noreferrer" className="nav-cta">
+        <a href={reservationUrl} target="_blank" rel="noreferrer" className="nav-cta">
           예약문의
         </a>
       </header>
@@ -149,7 +155,11 @@ export default function Home() {
         <section className="hero" id="home">
           <div className="hero-copy-block reveal">
             <p className="eyebrow">STYLELASH_KR</p>
-            <h1>Precision Lash, Effortless Mood.</h1>
+            <h1>
+              Precision Brows,
+              <br />
+              Effortless Beauty.
+            </h1>
             <p>
               부드러운 움직임과 선명한 결과. 스타일래쉬는 속눈썹과 브로우 디자인을
               더 가볍고 세련된 일상 루틴으로 바꿉니다.
@@ -337,18 +347,18 @@ export default function Home() {
           <p className="eyebrow">Contact</p>
           <h2>원하는 날짜를 보내주시면 빠르게 안내드릴게요.</h2>
           <div className="contact-actions">
-            <a href={instagramUrl} target="_blank" rel="noreferrer" className="btn-main">
+            <a href={reservationUrl} target="_blank" rel="noreferrer" className="btn-main">
               인스타그램 DM 예약
             </a>
-            <a href={naverPlaceUrl} target="_blank" rel="noreferrer" className="btn-sub">
+            <a href={naverMapUrl} target="_blank" rel="noreferrer" className="btn-sub">
               네이버 지도 위치 확인
             </a>
           </div>
         </section>
       </main>
 
-      <a href={instagramUrl} target="_blank" rel="noreferrer" className="floating-cta">
-        지금 예약 문의하기
+      <a href={reservationUrl} target="_blank" rel="noreferrer" className="floating-cta">
+        {reservationCtaLabel}
       </a>
     </>
   );
