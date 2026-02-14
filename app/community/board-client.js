@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -111,16 +111,21 @@ export default function CommunityBoardClient() {
 
   return (
     <main className="community-page">
-      <header className="community-head">
+      <header className="community-head community-card--glass">
         <Link href="/" className="community-back">
           ← Back to Home
         </Link>
-        <h1>후기 게시판</h1>
-        <p>실제 시술 후기를 남기고, 다른 고객의 경험도 확인해 보세요.</p>
+        <h1>프리미엄 후기 보드</h1>
+        <p>고객 리얼 후기를 한눈에 보고, 직접 경험을 공유해 보세요.</p>
+        <div className="community-hero-badges" aria-hidden>
+          <span className="community-hero-badge">실시간 업데이트</span>
+          <span className="community-hero-badge">고객 리뷰 아카이브</span>
+          <span className="community-hero-badge">스타일 피드백</span>
+        </div>
       </header>
 
       <section className="community-grid">
-        <article className="community-card">
+        <article className="community-card community-card--glass">
           <h2>후기 작성</h2>
           {!configured ? (
             <p className="community-hint">현재 게시판 설정이 완료되지 않았습니다. 관리자에게 문의해 주세요.</p>
@@ -154,8 +159,8 @@ export default function CommunityBoardClient() {
                 minLength={8}
                 maxLength={1000}
                 onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
-                placeholder="디자인 만족도, 결과, 분위기 등을 자유롭게 남겨주세요."
-                rows={5}
+                placeholder="시술 만족도, 분위기, 결과를 자세히 남겨주시면 다른 분들에게 큰 도움이 됩니다."
+                rows={6}
               />
             </label>
             <button type="submit" disabled={!canSubmit || !configured}>
@@ -165,7 +170,7 @@ export default function CommunityBoardClient() {
           {message ? <p className="community-message">{message}</p> : null}
         </article>
 
-        <article className="community-card">
+        <article className="community-card community-card--glass">
           <h2>최신 후기</h2>
           {loading ? <p className="community-hint">불러오는 중...</p> : null}
           {!loading && posts.length === 0 ? <p className="community-hint">아직 등록된 후기가 없습니다.</p> : null}
