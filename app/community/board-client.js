@@ -117,7 +117,7 @@ export default function CommunityBoardClient() {
     <main className="community-page">
       <header className="community-head community-card--glass">
         <Link href="/" className="community-back">
-          ← Back to Home
+          ← 홈으로 돌아가기
         </Link>
         <h1>눈썹문신 고객 후기</h1>
         <p>고객 리얼 후기를 한눈에 보고, 직접 경험을 공유해 보세요.</p>
