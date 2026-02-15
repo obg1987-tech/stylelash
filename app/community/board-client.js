@@ -40,7 +40,9 @@ export default function CommunityBoardClient() {
   const [form, setForm] = useState({
     nickname: "",
     rating: "5",
-    content: ""
+    content: "",
+    website: "",
+    formStartedAt: Date.now()
   });
 
   const canSubmit = useMemo(() => !submitting && configured, [submitting, configured]);
@@ -94,13 +96,15 @@ export default function CommunityBoardClient() {
         body: JSON.stringify({
           nickname,
           rating,
-          content
+          content,
+          website: form.website,
+          formStartedAt: form.formStartedAt
         })
       });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload?.error || "후기 등록에 실패했습니다.");
       setMessage("후기가 등록되었습니다.");
-      setForm({ nickname: "", rating: "5", content: "" });
+      setForm({ nickname: "", rating: "5", content: "", website: "", formStartedAt: Date.now() });
       await fetchPosts();
     } catch (error) {
       setMessage(error.message || "후기 등록에 실패했습니다.");
@@ -115,7 +119,7 @@ export default function CommunityBoardClient() {
         <Link href="/" className="community-back">
           ← Back to Home
         </Link>
-        <h1>프리미엄 후기 보드</h1>
+        <h1>눈썹문신 고객 후기</h1>
         <p>고객 리얼 후기를 한눈에 보고, 직접 경험을 공유해 보세요.</p>
         <div className="community-hero-badges" aria-hidden>
           <span className="community-hero-badge">실시간 업데이트</span>
@@ -131,6 +135,16 @@ export default function CommunityBoardClient() {
             <p className="community-hint">현재 게시판 설정이 완료되지 않았습니다. 관리자에게 문의해 주세요.</p>
           ) : null}
           <form onSubmit={submit} className="community-form">
+            <input
+              type="text"
+              name="website"
+              value={form.website}
+              autoComplete="off"
+              tabIndex={-1}
+              aria-hidden
+              onChange={(e) => setForm((prev) => ({ ...prev, website: e.target.value }))}
+              style={{ position: "absolute", left: "-9999px", opacity: 0, pointerEvents: "none" }}
+            />
             <label>
               닉네임
               <input

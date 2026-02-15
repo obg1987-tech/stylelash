@@ -306,11 +306,8 @@ export default function Home() {
             <div className="review-copy">
               <p>네이버 리뷰</p>
               <strong>방문자리뷰 18 · 블로그리뷰 43</strong>
-              <a href={naverReviewUrl} target="_blank" rel="noreferrer">
-                네이버 플레이스 보기
-              </a>
-              <a href={communityUrl} className="review-board-link">
-                후기 게시판 바로가기
+              <a href={naverReviewUrl} target="_blank" rel="noreferrer" className="review-board-link">
+                네이버 리뷰 바로가기
               </a>
             </div>
           </div>

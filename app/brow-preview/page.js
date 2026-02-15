@@ -1,10 +1,27 @@
 import BrowPreviewStudio from "./studio";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Brow Preview Studio",
-  description: "Upload a face photo and preview eyebrow shape changes before booking."
-};
+export function generateMetadata() {
+  const openInProduction = process.env.NEXT_PUBLIC_ENABLE_BROW_PREVIEW === "true";
+  const isPreviewOpen = process.env.NODE_ENV !== "production" || openInProduction;
+
+  return {
+    title: "Brow Preview Studio",
+    description: "Upload a face photo and preview eyebrow shape changes before booking.",
+    alternates: {
+      canonical: "/brow-preview"
+    },
+    robots: isPreviewOpen
+      ? {
+          index: true,
+          follow: true
+        }
+      : {
+          index: false,
+          follow: false
+        }
+  };
+}
 
 export default function BrowPreviewPage() {
   const openInProduction = process.env.NEXT_PUBLIC_ENABLE_BROW_PREVIEW === "true";

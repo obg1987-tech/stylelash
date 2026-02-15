@@ -1,5 +1,6 @@
 import { Plus_Jakarta_Sans, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
+import SiteStructuredData from "../components/site-structured-data";
 
 const display = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -13,82 +14,81 @@ const body = Noto_Sans_KR({
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
-const verification = {
-  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
-    : {}),
+
+const verificationOther = {
   ...(process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
-    ? {
-        other: {
-          "naver-site-verification":
-            process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
-        }
-      }
+    ? { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }
+    : {}),
+  ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+    ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
     : {})
 };
 
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "STYLE LASH | 눈썹문신 & 반영구 디자인",
+    default: "STYLE LASH | Eyebrow Tattoo & Retouch",
     template: "%s | STYLE LASH"
   },
   description:
-    "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정까지 1:1 맞춤 디자인으로 완성하는 STYLE LASH",
+    "Gunpo Sanbon eyebrow tattoo studio. 1:1 face mapping, natural brow design, retouch care, and booking guidance.",
   applicationName: "STYLE LASH",
   keywords: [
-    "스타일래쉬",
+    "style lash",
+    "eyebrow tattoo",
+    "eyebrow retouch",
+    "gunpo eyebrow",
+    "sanbon eyebrow",
+    "반영구 눈썹",
     "눈썹문신",
-    "반영구눈썹",
-    "콤보눈썹",
-    "자연눈썹",
-    "눈썹리터치",
-    "군포눈썹문신",
-    "산본눈썹문신",
-    "stylelash_kr"
+    "구포 눈썹문신"
   ],
   alternates: {
-    canonical: "/"
+    canonical: "/",
+    languages: {
+      "ko-KR": "/"
+    }
   },
   icons: {
     icon: "/og/sqare.png",
     apple: "/og/sqare.png",
     shortcut: "/og/sqare.png"
   },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "ko_KR",
     url: "/",
     siteName: "STYLE LASH",
-    title: "STYLE LASH | 눈썹문신 & 반영구 디자인",
+    title: "STYLE LASH | Eyebrow Tattoo & Retouch",
     description:
-      "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정까지 1:1 맞춤 디자인.",
+      "Gunpo Sanbon eyebrow tattoo studio. 1:1 face mapping and natural brow retouch service.",
     images: [
       {
         url: "/og/main.png",
         width: 1200,
         height: 630,
-        alt: "STYLE LASH"
+        alt: "STYLE LASH main visual"
       },
       {
         url: "/og/sqare.png",
         width: 1200,
         height: 1200,
-        alt: "STYLE LASH Square"
+        alt: "STYLE LASH logo"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "STYLE LASH | 눈썹문신 & 반영구 디자인",
+    title: "STYLE LASH | Eyebrow Tattoo & Retouch",
     description:
-      "군포 산본 스타일래쉬. 눈썹문신, 반영구 눈썹, 리터치 보정 1:1 맞춤 디자인.",
+      "Gunpo Sanbon eyebrow tattoo studio. 1:1 face mapping and natural brow retouch service.",
     images: ["/og/main.png"]
   },
-  verification: Object.keys(verification).length ? verification : undefined,
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
@@ -97,13 +97,23 @@ export const metadata = {
       "max-video-preview": -1
     }
   },
-  category: "beauty"
+  verification: {
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(Object.keys(verificationOther).length ? { other: verificationOther } : {})
+  },
+  category: "beauty",
+  referrer: "origin-when-cross-origin"
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={`${display.variable} ${body.variable}`}>{children}</body>
+      <body className={`${display.variable} ${body.variable}`}>
+        <SiteStructuredData />
+        {children}
+      </body>
     </html>
   );
 }

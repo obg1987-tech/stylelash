@@ -5,10 +5,21 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-        allow: "/"
+        allow: ["/", "/community", "/brow-preview"],
+        disallow: ["/api/"]
+      },
+      {
+        userAgent: "Googlebot",
+        allow: ["/"],
+        disallow: ["/api/"]
+      },
+      {
+        userAgent: "Yeti",
+        allow: ["/"],
+        disallow: ["/api/"]
       }
     ],
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: [`${siteUrl}/sitemap.xml`],
     host: siteUrl
   };
 }

@@ -2,7 +2,7 @@ export default function manifest() {
   return {
     name: "STYLE LASH",
     short_name: "STYLE LASH",
-    description: "군포 산본 스타일래쉬 눈썹문신/반영구 시술 안내",
+    description: "Eyebrow tattoo and retouch guide for STYLE LASH.",
     start_url: "/",
     display: "standalone",
     background_color: "#f5f6f8",

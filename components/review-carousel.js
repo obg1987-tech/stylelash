@@ -112,6 +112,9 @@ export default function ReviewCarousel({ cards }) {
             <article className="review-slide-card" key={`a-${card.image}-${index}`}>
               <div className="review-slide-media">
                 <Image src={card.image} alt={card.title} fill quality={72} sizes="280px" />
+                <span className="snap-star snap-star--a" aria-hidden />
+                <span className="snap-star snap-star--b" aria-hidden />
+                <span className="snap-star snap-star--c" aria-hidden />
               </div>
             </article>
           ))}
@@ -121,6 +124,9 @@ export default function ReviewCarousel({ cards }) {
             <article className="review-slide-card" key={`b-${card.image}-${index}`}>
               <div className="review-slide-media">
                 <Image src={card.image} alt="" fill quality={72} sizes="280px" />
+                <span className="snap-star snap-star--a" aria-hidden />
+                <span className="snap-star snap-star--b" aria-hidden />
+                <span className="snap-star snap-star--c" aria-hidden />
               </div>
             </article>
           ))}

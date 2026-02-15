@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 let detectorPromise;
@@ -270,10 +271,26 @@ function formatErrorMessage(error) {
   return message;
 }
 
+function readImageSize(src) {
+  return new Promise((resolve, reject) => {
+    const image = new window.Image();
+    image.onload = () => {
+      resolve({
+        width: image.naturalWidth || 1,
+        height: image.naturalHeight || 1
+      });
+    };
+    image.onerror = () => reject(new Error("Image size read failed"));
+    image.src = src;
+  });
+}
+
 export default function BrowPreviewStudio() {
   const [file, setFile] = useState(null);
   const [sourceUrl, setSourceUrl] = useState("");
   const [resultUrl, setResultUrl] = useState("");
+  const [sourceSize, setSourceSize] = useState({ width: 1, height: 1 });
+  const [resultSize, setResultSize] = useState({ width: 1, height: 1 });
   const [ratio, setRatio] = useState(0.5);
   const [prompt, setPrompt] = useState(DEFAULT_PRESET.prompt);
   const [negativePrompt, setNegativePrompt] = useState(DEFAULT_PRESET.negativePrompt);
@@ -294,6 +311,42 @@ export default function BrowPreviewStudio() {
     setSourceUrl(url);
     return () => URL.revokeObjectURL(url);
   }, [file]);
+
+  useEffect(() => {
+    let active = true;
+    if (!sourceUrl) {
+      setSourceSize({ width: 1, height: 1 });
+      return;
+    }
+    readImageSize(sourceUrl)
+      .then((size) => {
+        if (active) setSourceSize(size);
+      })
+      .catch(() => {
+        if (active) setSourceSize({ width: 1, height: 1 });
+      });
+    return () => {
+      active = false;
+    };
+  }, [sourceUrl]);
+
+  useEffect(() => {
+    let active = true;
+    if (!resultUrl) {
+      setResultSize(sourceSize);
+      return;
+    }
+    readImageSize(resultUrl)
+      .then((size) => {
+        if (active) setResultSize(size);
+      })
+      .catch(() => {
+        if (active) setResultSize(sourceSize);
+      });
+    return () => {
+      active = false;
+    };
+  }, [resultUrl, sourceSize]);
 
   const clearSelectedFile = () => {
     setFile(null);
@@ -434,7 +487,13 @@ export default function BrowPreviewStudio() {
                   x
                 </button>
               </div>
-              <img src={sourceUrl} alt="selected preview" />
+              <Image
+                src={sourceUrl}
+                alt="selected preview"
+                width={sourceSize.width}
+                height={sourceSize.height}
+                unoptimized
+              />
             </div>
           ) : null}
           <p>{status}</p>
@@ -502,10 +561,26 @@ export default function BrowPreviewStudio() {
       <section className="brow-compare-panel">
         <h2>Before / After</h2>
         <div ref={sliderRef} className="brow-compare-canvas-wrap" onPointerMove={onPointerMove}>
-          {resultUrl ? <img src={resultUrl} alt="after" className="brow-canvas" /> : null}
+          {resultUrl ? (
+            <Image
+              src={resultUrl}
+              alt="after"
+              className="brow-canvas"
+              width={resultSize.width}
+              height={resultSize.height}
+              unoptimized
+            />
+          ) : null}
           {sourceUrl ? (
             <div className="brow-before-layer" style={{ clipPath: `inset(0 ${100 - ratio * 100}% 0 0)` }}>
-              <img src={sourceUrl} alt="before" className="brow-canvas" />
+              <Image
+                src={sourceUrl}
+                alt="before"
+                className="brow-canvas"
+                width={sourceSize.width}
+                height={sourceSize.height}
+                unoptimized
+              />
             </div>
           ) : null}
 
