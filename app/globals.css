@@ -1610,13 +1610,24 @@ a {
   bottom: 1rem;
   z-index: 50;
   text-decoration: none;
-  color: #fff;
-  background: linear-gradient(90deg, #1f232b, #263446);
+  color: #fffdf9;
+  text-shadow: 0 1px 0 #00000055;
+  background: #1f3f75;
+  background-size: auto;
+  border: 1px solid #c9d6e5;
   border-radius: 12px;
-  font-weight: 550;
+  font-weight: 650;
+  letter-spacing: 0.01em;
   padding: 0.72rem 0.92rem;
-  box-shadow: 0 8px 16px #111f3d24;
-  animation: none;
+  transform-origin: 50% 65%;
+  transition: transform 220ms ease, box-shadow 260ms ease, filter 220ms ease;
+  box-shadow:
+    0 10px 20px #0f172942,
+    0 0 0 0 #c9d6e566,
+    0 0 22px #c9d6e547;
+  animation:
+    contactGradientFlow 2.3s linear infinite,
+    floatingCtaBeat 1.3s ease-in-out infinite;
 }
 
 .floating-tool-btn {
@@ -1669,10 +1680,13 @@ a {
 }
 
 .brow-studio-head {
-  border: 1px solid #e4eaf1;
+  border: 1px solid #b9c9db;
   border-radius: 20px;
   background: #fcfdff;
   padding: 1rem;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 10px 22px #10233c1a;
 }
 
 .brow-studio-back {
@@ -1703,10 +1717,13 @@ a {
 
 .brow-upload,
 .brow-controls {
-  border: 1px solid #e4eaf1;
+  border: 1px solid #b8c8da;
   border-radius: 16px;
   background: #ffffff;
   padding: 0.9rem;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 9px 20px #10233c16;
 }
 
 .brow-upload label {
@@ -1723,12 +1740,25 @@ a {
 .brow-dropzone {
   position: relative;
   margin-top: 0.3rem;
-  border: 1px dashed #cbd6e2;
+  border: 1px dashed #a7bbcf;
   border-radius: 12px;
-  padding: 1rem 0.8rem;
+  min-height: 250px;
+  padding: 1.3rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  background: #f9fbfd;
+  background: #fafcff;
+  box-shadow:
+    inset 0 1px 0 #ffffffd9,
+    0 6px 14px #10233c14;
   transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.brow-dropzone.has-file {
+  min-height: auto;
+  padding: 1rem 0.8rem;
 }
 
 .brow-dropzone p {
@@ -1765,12 +1795,15 @@ a {
 
 .brow-upload-preview {
   margin-top: 0.7rem;
-  border: 1px solid #e1e8f0;
+  border: 1px solid #b9cadc;
   border-radius: 10px;
   background: #f8fbff;
   padding: 0.55rem;
   display: grid;
   gap: 0.4rem;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 7px 16px #10233c13;
 }
 
 .brow-upload-preview-head {
@@ -1819,10 +1852,13 @@ a {
 }
 
 .brow-preset-wrap {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #b8cadc;
   border-radius: 10px;
   padding: 0.55rem;
   background: #fafcff;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 7px 15px #10233c12;
 }
 
 .brow-preset-title {
@@ -1880,12 +1916,15 @@ a {
 }
 
 .brow-strong-toggle {
-  border: 1px solid #dbe4ef;
+  border: 1px solid #b5c8dd;
   border-radius: 10px;
   background: #f8fbff;
   padding: 0.55rem;
   display: grid;
   gap: 0.4rem;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 7px 15px #10233c12;
 }
 
 .brow-strong-toggle button {
@@ -1918,11 +1957,14 @@ a {
 }
 
 .brow-actions button {
-  border: 1px solid #d5dde7;
+  border: 1px solid #b2c4d8;
   background: #fff;
   border-radius: 10px;
   padding: 0.5rem 0.8rem;
   cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 6px 13px #10233c16;
 }
 
 
@@ -2031,10 +2073,13 @@ a {
 
 .brow-compare-panel {
   margin-top: 0.9rem;
-  border: 1px solid #e4eaf1;
+  border: 1px solid #b8c9db;
   border-radius: 16px;
   background: #fff;
   padding: 0.9rem;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 10px 22px #10233c18;
 }
 
 .brow-compare-panel h2 {
@@ -2048,7 +2093,10 @@ a {
   overflow: hidden;
   border-radius: 12px;
   background: #f2f5f8;
-  border: 1px solid #dbe4ee;
+  border: 1px solid #afc3d7;
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 7px 16px #10233c14;
   touch-action: pan-y;
   user-select: none;
 }
@@ -2200,6 +2248,19 @@ a {
       0 18px 30px #10233c2a;
   }
 
+  .floating-cta:hover {
+    transform: translateY(-2px) scale(1.06);
+    filter: saturate(1.08);
+    box-shadow:
+      0 16px 30px #0f17295a,
+      0 0 0 12px #c9d6e552,
+      0 0 34px #c9d6e575;
+    animation:
+      contactGradientFlow 1.8s linear infinite,
+      floatingCtaBeat 0.9s ease-in-out infinite,
+      ctaDance 0.56s ease-in-out infinite alternate;
+  }
+
   .floating-tool-btn:hover::after,
   .brow-floating-home-btn:hover::after,
   .community-floating-home-btn:hover::after {
@@ -2280,6 +2341,60 @@ a {
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes ctaBeat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 12px 26px #0f172942,
+      0 0 0 0 #f1c8926e,
+      0 0 24px #f0b56a40;
+  }
+  50% {
+    transform: translateY(-1px) scale(1.04);
+    box-shadow:
+      0 18px 38px #0f172956,
+      0 0 0 10px #f1c89245,
+      0 0 34px #f0b56a66;
+  }
+}
+
+@keyframes ctaSparkSweep {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+  }
+}
+
+@keyframes ctaDance {
+  0% {
+    rotate: -1.8deg;
+  }
+  100% {
+    rotate: 1.8deg;
+  }
+}
+
+@keyframes floatingCtaBeat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    box-shadow:
+      0 10px 20px #0f172942,
+      0 0 0 0 #c9d6e566,
+      0 0 22px #c9d6e547;
+  }
+  50% {
+    transform: translateY(-1px) scale(1.04);
+    box-shadow:
+      0 16px 30px #0f17295a,
+      0 0 0 10px #c9d6e552,
+      0 0 34px #c9d6e575;
   }
 }
 
@@ -2587,6 +2702,12 @@ a {
   }
 
   .brow-dropzone {
+    min-height: 220px;
+    padding: 1.05rem 0.82rem;
+  }
+
+  .brow-dropzone.has-file {
+    min-height: auto;
     padding: 0.82rem 0.68rem;
   }
 

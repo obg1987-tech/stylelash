@@ -12,7 +12,7 @@ const DEFAULT_NEGATIVE_PROMPT =
 const STYLE_PRESETS = [
   {
     id: "ultra-soft-straight",
-    label: "Ultra Soft Straight",
+    label: "초자연 일자",
     note: "아주 연한 일자형",
     prompt:
       "very thin straight eyebrows, super soft edge, sparse light hair strokes, low contrast, light ash brown tone, natural korean look",
@@ -23,7 +23,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "flat-masculine",
-    label: "Flat Masculine",
+    label: "남성형 일자",
     note: "남성형 도톰 일자",
     prompt:
       "thick flat masculine eyebrows, strong straight line, broader brow body, dense dark ash strands, low arch, high definition",
@@ -34,7 +34,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "clean-mid-arch",
-    label: "Clean Mid Arch",
+    label: "클린 중간 아치",
     note: "정리된 중간 아치",
     prompt:
       "clean medium arch eyebrows, tidy contour, medium density, smooth directioned strands, neutral brown, polished salon finish",
@@ -45,7 +45,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "high-arch-glam",
-    label: "High Arch Glam",
+    label: "고아치 글램",
     note: "강한 고아치",
     prompt:
       "high dramatic arch eyebrows, sharp peak and tapered tail, dense glamorous strands, crisp contour, dark espresso tone",
@@ -56,7 +56,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "bold-block",
-    label: "Bold Block",
+    label: "볼드 블록",
     note: "진하고 강한 블록형",
     prompt:
       "bold block style eyebrows, fuller inner brow, heavy density, dark cool brown-black, strong edge clarity, high contrast",
@@ -67,7 +67,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "ombre-powder",
-    label: "Ombre Powder",
+    label: "옴브레 파우더",
     note: "그라데이션 파우더형",
     prompt:
       "ombre powder eyebrows, soft faded front and darker tail, powder makeup texture, smooth gradient fill, refined shape",
@@ -78,7 +78,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "ash-brown-tone",
-    label: "Ash Brown Tone",
+    label: "애쉬 브라운 톤",
     note: "쿨 회갈색 강조",
     prompt:
       "eyebrow color must be cool ash brown, visible cool gray-brown tint, medium shape, realistic strands, no warm hue",
@@ -89,7 +89,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "light-warm-brown",
-    label: "Light Warm Brown",
+    label: "라이트 웜브라운",
     note: "밝은 웜브라운",
     prompt:
       "eyebrow color must be light warm brown, brighter than natural black hair, airy soft strokes, gentle feminine shape",
@@ -100,7 +100,7 @@ const STYLE_PRESETS = [
   },
   {
     id: "graphite-cool",
-    label: "Graphite Cool",
+    label: "그라파이트 쿨",
     note: "딥 그라파이트 쿨톤",
     prompt:
       "eyebrow color must be deep graphite gray, cool dark gray-black tint, dense but clean strands, sharp modern contour",
@@ -252,7 +252,7 @@ function resetMagnetic(event) {
 }
 
 function formatErrorMessage(error) {
-  const message = error?.message || "Generation failed.";
+  const message = error?.message || "생성에 실패했습니다.";
   if (message.includes("Face not detected")) {
     return "얼굴을 찾지 못했어요. 정면 얼굴 사진으로 다시 시도해 주세요.";
   }
@@ -268,7 +268,7 @@ function formatErrorMessage(error) {
   if (message.includes("ComfyUI execution error")) {
     return `ComfyUI 노드 실행 오류: ${message}`;
   }
-  return message;
+  return `오류: ${message}`;
 }
 
 function readImageSize(src) {
@@ -299,7 +299,7 @@ export default function BrowPreviewStudio() {
   const [cfg, setCfg] = useState(DEFAULT_PRESET.cfg);
   const [selectedPresetId, setSelectedPresetId] = useState(DEFAULT_PRESET.id);
   const [strongTransform, setStrongTransform] = useState(false);
-  const [status, setStatus] = useState("Upload a photo to start ComfyUI inpainting.");
+  const [status, setStatus] = useState("사진을 업로드하면 눈썹 프리뷰를 시작할 수 있어요.");
   const [busy, setBusy] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
@@ -359,12 +359,12 @@ export default function BrowPreviewStudio() {
     const next = event.target.files?.[0];
     if (!next) return;
     if (!isImageFile(next)) {
-      setStatus("Only image files are supported (png, jpg, jpeg, webp, bmp, gif).");
+      setStatus("이미지 파일만 업로드할 수 있어요. (png, jpg, jpeg, webp, bmp, gif)");
       return;
     }
     setFile(next);
     setResultUrl("");
-    setStatus("Ready. Click Generate with ComfyUI.");
+    setStatus("준비 완료. 생성 버튼을 눌러주세요.");
   };
 
   const onDrop = (event) => {
@@ -372,12 +372,12 @@ export default function BrowPreviewStudio() {
     setIsDragging(false);
     const next = getDroppedImageFile(event.dataTransfer);
     if (!next) {
-      setStatus("Drop an image file (png, jpg, jpeg, webp, bmp, gif).");
+      setStatus("이미지 파일을 드래그해서 올려주세요. (png, jpg, jpeg, webp, bmp, gif)");
       return;
     }
     setFile(next);
     setResultUrl("");
-    setStatus("Ready. Click Generate with ComfyUI.");
+    setStatus("준비 완료. 생성 버튼을 눌러주세요.");
   };
 
   const onDragOver = (event) => {
@@ -422,9 +422,9 @@ export default function BrowPreviewStudio() {
         body: form
       });
       const payload = await response.json();
-      if (!response.ok) throw new Error(payload?.detail || payload?.error || "Generation failed");
+      if (!response.ok) throw new Error(payload?.detail || payload?.error || "생성에 실패했습니다.");
       setResultUrl(payload.image);
-      setStatus(`Done. Seed ${payload.seed}`);
+      setStatus(`생성 완료. 시드: ${payload.seed}`);
     } catch (error) {
       setStatus(formatErrorMessage(error));
     } finally {
@@ -460,23 +460,23 @@ export default function BrowPreviewStudio() {
   return (
     <main className="brow-studio-page">
       <header className="brow-studio-head">
-        <Link href="/" className="brow-studio-back">← Back to Home</Link>
-        <h1>ComfyUI Brow Inpaint</h1>
-        <p>Local mode: FLUX Fill inpainting workflow (no API billing).</p>
+        <Link href="/" className="brow-studio-back">← 홈으로 돌아가기</Link>
+        <h1>눈썹 프리뷰 스튜디오</h1>
+        <p>로컬 모드: FLUX Fill 인페인팅 워크플로우 (API 과금 없음)</p>
       </header>
 
       <section className="brow-studio-panel">
         <div className="brow-upload">
-          <label htmlFor="comfy-file">Upload photo</label>
+          <label htmlFor="comfy-file">사진 업로드</label>
           <div
-            className={`brow-dropzone${isDragging ? " is-dragging" : ""}`}
+            className={`brow-dropzone${isDragging ? " is-dragging" : ""}${sourceUrl ? " has-file" : ""}`}
             onDrop={onDrop}
             onDragOver={onDragOver}
             onDragEnter={onDragEnter}
             onDragLeave={onDragLeave}
           >
-            <p>{isDragging ? "Drop to upload" : "Drag image here"}</p>
-            <span>{isDragging ? "놓으면 바로 첨부됩니다" : "or click to choose file"}</span>
+            <p>{isDragging ? "여기에 놓으면 업로드돼요" : "이미지를 여기로 드래그하세요"}</p>
+            <span>{isDragging ? "놓으면 바로 첨부됩니다" : "또는 클릭해서 파일을 선택하세요"}</span>
             <input id="comfy-file" type="file" accept="image/*" onChange={onFileChange} />
           </div>
           {sourceUrl ? (
@@ -489,7 +489,7 @@ export default function BrowPreviewStudio() {
               </div>
               <Image
                 src={sourceUrl}
-                alt="selected preview"
+                alt="업로드 미리보기"
                 width={sourceSize.width}
                 height={sourceSize.height}
                 unoptimized
@@ -501,7 +501,7 @@ export default function BrowPreviewStudio() {
 
         <div className="brow-controls">
           <div className="brow-full-width-control brow-preset-wrap">
-            <p className="brow-preset-title">Style Presets</p>
+            <p className="brow-preset-title">스타일 프리셋</p>
             <div className="brow-preset-list">
               {STYLE_PRESETS.map((preset) => (
                 <button
@@ -543,23 +543,23 @@ export default function BrowPreviewStudio() {
               onClick={() => setStrongTransform((prev) => !prev)}
               disabled={busy}
             >
-              {strongTransform ? "Strong Transform: ON" : "Strong Transform: OFF"}
+              {strongTransform ? "강한 변환: ON" : "강한 변환: OFF"}
             </button>
             <p>ON이면 마스크 범위 + 변환 강도를 높여 프리셋 차이를 크게 만듭니다.</p>
           </div>
           <div className="brow-actions">
             <button type="button" onClick={generate} disabled={!file || busy}>
-              {busy ? "Generating..." : "Generate with ComfyUI"}
+              {busy ? "생성 중..." : "이미지 생성하기"}
             </button>
           </div>
           <p style={{ margin: 0, color: "#5a6572", fontSize: "0.82rem" }}>
-            ComfyUI must be running at <code>http://127.0.0.1:8000</code> with FLUX model files available.
+            ComfyUI가 <code>http://127.0.0.1:8000</code>에서 실행 중이어야 하며 FLUX 모델 파일이 준비되어야 합니다.
           </p>
         </div>
       </section>
 
       <section className="brow-compare-panel">
-        <h2>Before / After</h2>
+        <h2>비포 / 애프터</h2>
         <div ref={sliderRef} className="brow-compare-canvas-wrap" onPointerMove={onPointerMove}>
           {resultUrl ? (
             <Image
@@ -584,8 +584,8 @@ export default function BrowPreviewStudio() {
             </div>
           ) : null}
 
-          <span className="brow-canvas-tag brow-canvas-tag-left">Before</span>
-          <span className="brow-canvas-tag brow-canvas-tag-right">After</span>
+          <span className="brow-canvas-tag brow-canvas-tag-left">비포</span>
+          <span className="brow-canvas-tag brow-canvas-tag-right">애프터</span>
 
           <div className="brow-compare-divider" style={{ left: `${ratio * 100}%` }}>
             <div className="brow-compare-line" />
@@ -601,6 +601,26 @@ export default function BrowPreviewStudio() {
             </button>
           </div>
         </div>
+      </section>
+      <section
+        style={{
+          marginTop: "0.8rem",
+          border: "1px solid #d7e4f5",
+          borderLeft: "6px solid #6f8fb8",
+          borderRadius: "12px",
+          background: "linear-gradient(145deg, #f6f9ff 0%, #eff5ff 100%)",
+          padding: "0.9rem 1rem"
+        }}
+      >
+        <p style={{ margin: 0, fontSize: "0.82rem", fontWeight: 800, color: "#324766", letterSpacing: "0.02em" }}>
+          안내
+        </p>
+        <p style={{ margin: "0.38rem 0 0", color: "#213552", lineHeight: 1.6, fontWeight: 600 }}>
+          현재 배포 버전에서는 ComfyUI 서버/모델이 연결되지 않아 생성 기능이 제한됩니다.
+        </p>
+        <p style={{ margin: "0.42rem 0 0", color: "#334c6d", lineHeight: 1.65 }}>
+          준비 중: GPU 서버 구축, ComfyUI 모델 파일 배치, API 연동, 요청 큐/모니터링.
+        </p>
       </section>
 
       <Link

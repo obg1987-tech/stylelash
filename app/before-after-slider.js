@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -60,10 +60,11 @@ export default function BeforeAfterSlider() {
       <div
         ref={trackRef}
         className="ba-compare"
+        onDragStart={(event) => event.preventDefault()}
         onPointerMove={onPointerMove}
         onKeyDown={onKeyDown}
         role="slider"
-        aria-label="전후 사진 비교 슬라이더"
+        aria-label="?꾪썑 ?ъ쭊 鍮꾧탳 ?щ씪?대뜑"
         aria-valuemin={5}
         aria-valuemax={95}
         aria-valuenow={Math.round(ratio * 100)}
@@ -72,8 +73,9 @@ export default function BeforeAfterSlider() {
         <div className="ba-layer ba-after">
           <Image
             src="/assets/before-after/2.png"
-            alt="눈썹문신 시술 후 이미지"
+            alt="?덉뜾臾몄떊 ?쒖닠 ???대?吏"
             fill
+            draggable={false}
             quality={76}
             sizes="(max-width: 800px) 100vw, 76vw"
           />
@@ -83,8 +85,9 @@ export default function BeforeAfterSlider() {
         <div className="ba-layer ba-before" style={{ clipPath: `inset(0 ${100 - ratio * 100}% 0 0)` }}>
           <Image
             src="/assets/before-after/1.png"
-            alt="눈썹문신 시술 전 이미지"
+            alt="?덉뜾臾몄떊 ?쒖닠 ???대?吏"
             fill
+            draggable={false}
             quality={76}
             sizes="(max-width: 800px) 100vw, 76vw"
           />

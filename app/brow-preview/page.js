@@ -1,4 +1,4 @@
-import BrowPreviewStudio from "./studio";
+﻿import BrowPreviewStudio from "./studio";
 import Link from "next/link";
 
 export function generateMetadata() {
@@ -40,11 +40,11 @@ export default function BrowPreviewPage() {
           }}
         >
           <Link href="/" style={{ textDecoration: "none", color: "#2d3a47", fontSize: "0.9rem" }}>
-            ← Back to Home
+            ← 홈으로 돌아가기
           </Link>
-          <h1 style={{ margin: "0.45rem 0 0.4rem", fontSize: "2rem" }}>ComfyUI Brow Inpaint</h1>
+          <h1 style={{ margin: "0.45rem 0 0.4rem", fontSize: "2rem" }}>눈썹 프리뷰 스튜디오</h1>
           <p style={{ margin: 0, color: "#586371" }}>
-            Local mode: FLUX Fill inpainting workflow (no API billing).
+            로컬 모드: FLUX Fill 인페인팅 워크플로우 (API 과금 없음)
           </p>
         </section>
 
@@ -64,7 +64,7 @@ export default function BrowPreviewPage() {
               padding: "0.9rem"
             }}
           >
-            <p style={{ margin: 0, color: "#4f5963", fontSize: "0.86rem" }}>Upload photo</p>
+            <p style={{ margin: 0, color: "#4f5963", fontSize: "0.86rem" }}>사진 업로드</p>
             <div
               style={{
                 marginTop: "0.45rem",
@@ -76,9 +76,9 @@ export default function BrowPreviewPage() {
                 color: "#5b6672"
               }}
             >
-              Drag image here
+              이미지를 여기로 드래그하세요
               <br />
-              or click to choose file
+              또는 클릭해서 파일을 선택하세요
             </div>
             <div
               style={{
@@ -99,9 +99,9 @@ export default function BrowPreviewPage() {
               padding: "0.9rem"
             }}
           >
-            <p style={{ margin: 0, color: "#445261", fontSize: "0.78rem", fontWeight: 700 }}>Style Presets</p>
+            <p style={{ margin: 0, color: "#445261", fontSize: "0.78rem", fontWeight: 700 }}>스타일 프리셋</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.45rem" }}>
-              {["Ultra Soft", "Flat", "Mid Arch", "Glam", "Bold", "Ombre", "Ash", "Warm", "Graphite"].map(
+              {["초자연 일자", "남성형 일자", "중간 아치", "글램", "볼드", "옴브레", "애쉬", "웜브라운", "그라파이트"].map(
                 (label) => (
                   <span
                     key={label}
@@ -132,7 +132,7 @@ export default function BrowPreviewPage() {
                 cursor: "not-allowed"
               }}
             >
-              Generate with ComfyUI
+              이미지 생성하기
             </button>
           </div>
         </section>
@@ -147,7 +147,7 @@ export default function BrowPreviewPage() {
             marginBottom: "0.9rem"
           }}
         >
-          <h2 style={{ margin: 0, fontSize: "0.9rem", color: "#354150" }}>Before / After</h2>
+          <h2 style={{ margin: 0, fontSize: "0.9rem", color: "#354150" }}>비포 / 애프터</h2>
         </section>
 
         <section
@@ -168,7 +168,7 @@ export default function BrowPreviewPage() {
               fontSize: "0.82rem"
             }}
           >
-            NOTICE
+            안내
           </p>
           <p
             style={{
@@ -179,8 +179,18 @@ export default function BrowPreviewPage() {
               fontWeight: 700
             }}
           >
-            프리미엄 브로우 프리뷰가 곧 오픈됩니다. 현재는 마지막 품질 튜닝 단계로, 정식 출시 후 더 정교한
-            스타일 시뮬레이션을 바로 경험하실 수 있습니다.
+            현재 배포 버전에서는 ComfyUI 서버/모델 미연동으로 생성 기능이 제한됩니다.
+          </p>
+          <p
+            style={{
+              margin: "0.45rem 0 0",
+              color: "#2a3d62",
+              lineHeight: 1.62,
+              fontSize: "0.95rem",
+              fontWeight: 600
+            }}
+          >
+            준비 중: GPU 서버 구축, ComfyUI 모델 파일 배치, API 연동, 요청 큐/모니터링.
           </p>
         </section>
         <Link href="/" className="brow-floating-home-btn" aria-label="Go to home">

@@ -153,7 +153,7 @@ export default function CommunityBoardClient() {
                 minLength={2}
                 maxLength={24}
                 onChange={(e) => setForm((prev) => ({ ...prev, nickname: e.target.value }))}
-                placeholder="예: 브로우맛집"
+                placeholder="예: 홍길동"
               />
             </label>
             <label>
