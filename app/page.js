@@ -5,6 +5,7 @@ import BeforeAfterSlider from "./before-after-slider";
 import FloatingToolButton from "../components/floating-tool-button";
 import FloatingCallCta from "../components/floating-call-cta";
 import ReviewCarousel from "../components/review-carousel";
+import MobileMenu from "../components/mobile-menu";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 const instagramUrl = "https://www.instagram.com/stylelash_kr?igsh=N3B1N2J5aWY2dWhr";
@@ -178,16 +179,7 @@ export default function Home() {
             ))}
           </nav>
                   </div>
-        <details className="mobile-menu">
-          <summary aria-label="메뉴 열기">Menu</summary>
-          <div className="mobile-menu-panel">
-            {navItems.map((item) => (
-              <a key={item.href} href={item.href}>
-                {item.label}
-              </a>
-            ))}
-                      </div>
-        </details>
+        <MobileMenu items={navItems} />
       </header>
 
       <main className="site-main">
