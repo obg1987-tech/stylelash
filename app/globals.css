@@ -99,6 +99,7 @@ a {
   list-style: none;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
   border: 1px solid #dbe2ea;
   background: #fff;
   border-radius: 999px;
@@ -132,6 +133,7 @@ a {
   border-radius: 8px;
   padding: 0.52rem 0.58rem;
   font-size: 0.84rem;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu-panel a:hover {
