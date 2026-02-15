@@ -1473,19 +1473,19 @@ a {
 }
 
 .timeline li:nth-child(1):hover {
-  border-left-color: #c65a5a;
+  border-left-color: #e54848;
 }
 
 .timeline li:nth-child(2):hover {
-  border-left-color: #d08a4f;
+  border-left-color: #d2b321;
 }
 
 .timeline li:nth-child(3):hover {
-  border-left-color: #b89b3c;
+  border-left-color: #3f73d9;
 }
 
 .timeline li:nth-child(4):hover {
-  border-left-color: #3e5f8c;
+  border-left-color: #7b4cc9;
 }
 
 .faq-list {
