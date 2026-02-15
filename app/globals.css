@@ -1523,6 +1523,8 @@ a {
   letter-spacing: -0.03em;
   max-width: none;
   white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
 }
 
 .contact-actions {
@@ -2649,6 +2651,8 @@ a {
 
   .contact h2 {
     white-space: normal;
+    word-break: keep-all;
+    line-height: 1.45;
   }
 
   .hero-metrics,
