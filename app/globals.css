@@ -1630,6 +1630,87 @@ a {
     floatingCtaBeat 1.3s ease-in-out infinite;
 }
 
+.call-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: #0a132142;
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.call-modal {
+  width: min(440px, calc(100vw - 1.4rem));
+  border: 1px solid #cfd6df;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 88% 10%, #fff6ea9e 0%, #fff6ea00 34%),
+    linear-gradient(145deg, #fffdf9 0%, #f6f1e8 55%, #efe7da 100%);
+  box-shadow:
+    0 24px 50px #0f17294d,
+    0 0 0 1px #d8dee6,
+    inset 0 1px 0 #fff8ef;
+  padding: 1rem 1rem 0.9rem;
+  animation: callModalIn 220ms ease;
+}
+
+.call-modal-eyebrow {
+  margin: 0;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8f7351;
+  font-weight: 700;
+  font-family: var(--font-body), sans-serif;
+}
+
+.call-modal h3 {
+  margin: 0.42rem 0 0;
+  color: #251f19;
+  font-size: 1.16rem;
+  line-height: 1.35;
+  font-family: var(--font-display), sans-serif;
+}
+
+.call-modal p {
+  margin: 0.52rem 0 0;
+  color: #4a3e31;
+  line-height: 1.65;
+  font-size: 0.94rem;
+  font-family: var(--font-body), sans-serif;
+}
+
+.call-modal strong {
+  color: #2a4f88;
+  letter-spacing: 0.01em;
+}
+
+.call-modal button {
+  margin-top: 0.86rem;
+  width: 100%;
+  border: 1px solid #c9d4e7;
+  border-radius: 11px;
+  background:
+    linear-gradient(120deg, #12213f 0%, #1a2f58 52%, #0f4e57 100%);
+  color: #f6f9ff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.76rem;
+  cursor: pointer;
+  font-family: var(--font-body), sans-serif;
+  box-shadow:
+    0 10px 20px #13233f3f,
+    inset 0 1px 0 #ffffff2b,
+    0 0 18px #4b7fc233;
+}
+
+.call-modal button:hover {
+  filter: saturate(1.16) brightness(1.03);
+  transform: translateY(-0.5px);
+}
+
 .floating-tool-btn {
   position: fixed;
   right: 1rem;
@@ -2368,6 +2449,17 @@ a {
   }
   100% {
     transform: translateY(0) rotate(360deg);
+  }
+}
+
+@keyframes callModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 

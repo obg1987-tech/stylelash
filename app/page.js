@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import BeforeAfterSlider from "./before-after-slider";
 import FloatingToolButton from "../components/floating-tool-button";
+import FloatingCallCta from "../components/floating-call-cta";
 import ReviewCarousel from "../components/review-carousel";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
@@ -364,9 +365,7 @@ export default function Home() {
         </section>
       </main>
 
-      <a href={reservationUrl} target="_blank" rel="noreferrer" className="floating-cta">
-        {reservationCtaLabel}
-      </a>
+      <FloatingCallCta />
       <FloatingToolButton />
     </>
   );
