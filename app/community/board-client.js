@@ -171,7 +171,6 @@ export default function CommunityBoardClient() {
               <textarea
                 value={form.content}
                 minLength={8}
-                maxLength={1000}
                 onChange={(e) => setForm((prev) => ({ ...prev, content: e.target.value }))}
                 placeholder="시술 만족도, 분위기, 결과를 자세히 남겨주시면 다른 분들에게 큰 도움이 됩니다."
                 rows={6}

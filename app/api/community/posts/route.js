@@ -166,8 +166,8 @@ export async function POST(request) {
   if (!nickname || nickname.length < 2 || nickname.length > 24) {
     return NextResponse.json({ error: "Nickname must be between 2 and 24 characters." }, { status: 400 });
   }
-  if (!content || content.length < 8 || content.length > 1000) {
-    return NextResponse.json({ error: "Review content must be between 8 and 1000 characters." }, { status: 400 });
+  if (!content || content.length < 8) {
+    return NextResponse.json({ error: "Review content must be at least 8 characters." }, { status: 400 });
   }
   if (!Number.isFinite(rating) || rating < 1 || rating > 5) {
     return NextResponse.json({ error: "Rating must be between 1 and 5." }, { status: 400 });

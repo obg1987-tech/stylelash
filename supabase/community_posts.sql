@@ -3,7 +3,7 @@
 create table if not exists public.community_posts (
   id uuid primary key default gen_random_uuid(),
   nickname text not null check (char_length(trim(nickname)) between 2 and 24),
-  content text not null check (char_length(trim(content)) between 8 and 1000),
+  content text not null check (char_length(trim(content)) >= 8),
   rating int not null check (rating between 1 and 5),
   is_visible boolean not null default true,
   created_at timestamptz not null default now()
@@ -39,6 +39,6 @@ create policy public_insert_posts
   with check (
     is_visible = true
     and char_length(trim(nickname)) between 2 and 24
-    and char_length(trim(content)) between 8 and 1000
+    and char_length(trim(content)) >= 8
     and rating between 1 and 5
   );
