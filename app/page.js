@@ -205,7 +205,11 @@ export default function Home() {
                 Effortless Beauty.
               </span>
             </h1>
-            <p>자연스럽고 또렷한 인상 변화를 위해 맞춤형 눈썹 시술을 제공합니다.</p>
+            <p>
+              자연스럽고 또렷한 인상 변화를 위해 맞춤형 눈썹
+              <br />
+              시술을 제공합니다.
+            </p>
                         <div className="hero-metrics">
               <article>
                 <span>Signature 01</span>
@@ -247,7 +251,17 @@ export default function Home() {
                 </div>
                 <p>{card.subtitle}</p>
                 <h3>{card.title}</h3>
-                <p>{card.copy}</p>
+                <p>
+                  {card.title === "Brow Tattoo" ? (
+                    <>
+                      얼굴 비율과 근육 움직임을 고려해 맞춤 눈썹
+                      <br />
+                      라인을 디자인합니다.
+                    </>
+                  ) : (
+                    card.copy
+                  )}
+                </p>
               </article>
             ))}
           </div>
@@ -346,9 +360,8 @@ export default function Home() {
         <section className="contact" id="contact">
           <p className="eyebrow">Contact</p>
           <h2>
-            원하는 날짜를 보내주시면 빠르게
-            <br className="contact-mobile-break" />
-            예약 가능한 시간을 안내해드립니다.
+            원하는 날짜를 보내주시면 빠르게{" "}
+            <span className="contact-second-line">예약 가능한 시간을 안내해드립니다.</span>
           </h2>
           <div className="contact-actions">
             <a href={reservationUrl} target="_blank" rel="noreferrer" className="btn-main">

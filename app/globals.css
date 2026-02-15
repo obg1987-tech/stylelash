@@ -1543,8 +1543,8 @@ a {
   overflow-wrap: normal;
 }
 
-.contact-mobile-break {
-  display: none;
+.contact-second-line {
+  display: inline;
 }
 
 .contact-actions {
@@ -2590,7 +2590,7 @@ a {
 }
 
 @media (max-width: 1024px) {
-  .contact-mobile-break {
+  .contact-second-line {
     display: block;
   }
 
@@ -2679,7 +2679,7 @@ a {
     line-height: 1.45;
   }
 
-  .contact-mobile-break {
+  .contact-second-line {
     display: block;
   }
 
