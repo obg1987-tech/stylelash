@@ -1472,6 +1472,22 @@ a {
   box-shadow: 0 7px 14px #10233c12;
 }
 
+.timeline li:nth-child(1):hover {
+  border-left-color: #d94a4a;
+}
+
+.timeline li:nth-child(2):hover {
+  border-left-color: #e78a2f;
+}
+
+.timeline li:nth-child(3):hover {
+  border-left-color: #caa316;
+}
+
+.timeline li:nth-child(4):hover {
+  border-left-color: #2d4f8f;
+}
+
 .faq-list {
   display: grid;
   gap: 0.65rem;
