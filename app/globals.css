@@ -1527,6 +1527,10 @@ a {
   overflow-wrap: normal;
 }
 
+.contact-mobile-break {
+  display: none;
+}
+
 .contact-actions {
   margin-top: 1rem;
   display: flex;
@@ -2570,6 +2574,10 @@ a {
 }
 
 @media (max-width: 1024px) {
+  .contact-mobile-break {
+    display: block;
+  }
+
   .hero {
     grid-template-columns: 1fr;
   }
@@ -2653,6 +2661,10 @@ a {
     white-space: normal;
     word-break: keep-all;
     line-height: 1.45;
+  }
+
+  .contact-mobile-break {
+    display: block;
   }
 
   .hero-metrics,

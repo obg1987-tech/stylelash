@@ -73,7 +73,7 @@ const businessInfo = [
 
 const faqItems = [
   {
-    q: "처음 방문인데 어떤 시술이 맞는지 모르겠어요.",
+    q: "처음 방문인데 어떤 시술이 맞을까요?",
     a: "상담에서 골격, 기존 눈썹 상태, 원하는 분위기를 확인 후 가장 적합한 시술을 추천해드립니다."
   },
   {
@@ -345,7 +345,11 @@ export default function Home() {
 
         <section className="contact" id="contact">
           <p className="eyebrow">Contact</p>
-          <h2>원하는 날짜를 보내주시면 빠르게 예약 가능한 시간을 안내해드립니다.</h2>
+          <h2>
+            원하는 날짜를 보내주시면 빠르게
+            <br className="contact-mobile-break" />
+            예약 가능한 시간을 안내해드립니다.
+          </h2>
           <div className="contact-actions">
             <a href={reservationUrl} target="_blank" rel="noreferrer" className="btn-main">
               {reservationCtaLabel}
