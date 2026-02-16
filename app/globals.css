@@ -2175,9 +2175,41 @@ a {
   animation: softHaloGreen 2.2s ease-in-out infinite;
 }
 
+.snap-floating-home-btn {
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  --mag-x: 0px;
+  --mag-y: 0px;
+  transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y)));
+  width: 82px;
+  height: 82px;
+  border-radius: 999px;
+  border: 1px solid #f2d184;
+  background: linear-gradient(145deg, #fff6d6 0%, #fff0bf 48%, #fff9e2 100%);
+  z-index: 51;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #101317;
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 220ms ease, box-shadow 260ms ease, border-color 220ms ease, filter 220ms ease;
+  box-shadow:
+    0 0 0 1px #f7e4a8,
+    0 0 0 7px #ffcf5b26,
+    0 0 24px #ffbf2f55,
+    0 10px 22px #10233c1f;
+  animation: softHaloYellow 2.2s ease-in-out infinite;
+}
+
 .floating-tool-btn::after,
 .brow-floating-home-btn::after,
-.community-floating-home-btn::after {
+.community-floating-home-btn::after,
+.snap-floating-home-btn::after {
   content: "";
   position: absolute;
   inset: -32% auto -32% -125%;
@@ -2191,7 +2223,8 @@ a {
 
 .floating-tool-btn > *,
 .brow-floating-home-btn > *,
-.community-floating-home-btn > * {
+.community-floating-home-btn > *,
+.snap-floating-home-btn > * {
   position: relative;
   z-index: 1;
 }
@@ -2212,6 +2245,16 @@ a {
 }
 
 .community-floating-home-btn small {
+  font-size: 0.66rem;
+  color: #4e5863;
+}
+
+.snap-floating-home-btn span {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.snap-floating-home-btn small {
   font-size: 0.66rem;
   color: #4e5863;
 }
@@ -2364,7 +2407,8 @@ a {
 
   .floating-tool-btn:hover,
   .brow-floating-home-btn:hover,
-  .community-floating-home-btn:hover {
+  .community-floating-home-btn:hover,
+  .snap-floating-home-btn:hover {
     transform: translateX(var(--mag-x)) translateY(calc(-50% + var(--mag-y))) scale(1.07);
     border-color: #b18bff;
     filter: saturate(1.08);
@@ -2393,6 +2437,15 @@ a {
       0 18px 30px #10233c2a;
   }
 
+  .snap-floating-home-btn:hover {
+    border-color: #f2c046;
+    box-shadow:
+      0 0 0 1px #f7e4a8,
+      0 0 0 10px #ffcf5b38,
+      0 0 34px #ffbf2f80,
+      0 18px 30px #10233c2a;
+  }
+
   .floating-cta:hover {
     transform: translateY(-2px) scale(1.06);
     filter: saturate(1.08);
@@ -2408,7 +2461,8 @@ a {
 
   .floating-tool-btn:hover::after,
   .brow-floating-home-btn:hover::after,
-  .community-floating-home-btn:hover::after {
+  .community-floating-home-btn:hover::after,
+  .snap-floating-home-btn:hover::after {
     transform: translateX(520%) rotate(20deg);
   }
 }
@@ -2629,6 +2683,24 @@ a {
   }
 }
 
+@keyframes softHaloYellow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #f7e4a8,
+      0 0 0 7px #ffcf5b26,
+      0 0 20px #ffbf2f55,
+      0 10px 22px #10233c1f;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px #f7e4a8,
+      0 0 0 10px #ffcf5b38,
+      0 0 30px #ffbf2f80,
+      0 10px 22px #10233c1f;
+  }
+}
+
 @media (max-width: 1024px) {
   .contact-second-line {
     display: block;
@@ -2779,6 +2851,15 @@ a {
     height: 72px;
   }
 
+  .snap-floating-home-btn {
+    top: auto;
+    right: 0.65rem;
+    bottom: calc(4.8rem + env(safe-area-inset-bottom, 0px));
+    transform: translateX(var(--mag-x)) translateY(var(--mag-y));
+    width: 72px;
+    height: 72px;
+  }
+
   .brow-studio-panel,
   .brow-controls,
   .community-grid {
@@ -2902,7 +2983,8 @@ a {
 @media (max-width: 1024px) and (max-height: 740px) {
   .floating-tool-btn,
   .brow-floating-home-btn,
-  .community-floating-home-btn {
+  .community-floating-home-btn,
+  .snap-floating-home-btn {
     width: 64px;
     height: 64px;
     right: 0.58rem;

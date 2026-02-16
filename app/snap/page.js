@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import Link from "next/link";
 import PremiumPhotoGalleryCarousel from "../../components/premium-photo-gallery-carousel";
+import SnapFloatingHomeButton from "../../components/snap-floating-home-button";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 
@@ -81,13 +81,12 @@ export default function SnapPage() {
       <section className="snap-page-shell">
         <header className="snap-page-head">
           <h1 className="visually-hidden">Customer photo review gallery</h1>
-          <Link href="/" className="snap-page-back">
-            홈으로
-          </Link>
         </header>
 
         <PremiumPhotoGalleryCarousel items={customerPhotos} ariaLabel="Customer photo review gallery" />
       </section>
+
+      <SnapFloatingHomeButton />
     </main>
   );
 }
