@@ -1,65 +1,65 @@
 import fs from "node:fs";
 import path from "node:path";
 import Link from "next/link";
-import ReviewCarousel from "../../components/review-carousel";
+import PremiumPhotoGalleryCarousel from "../../components/premium-photo-gallery-carousel";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stylash.vercel.app";
 
-const fallbackReviewCarouselCards = [
-  { title: "Natural Brow Line", image: "/assets/review/1.png" },
-  { title: "Soft Daily Mood", image: "/assets/service/1.png" },
-  { title: "Defined Balance", image: "/assets/service/2.png" },
-  { title: "Before/After Focus", image: "/assets/before-after/1.png" },
-  { title: "Clean Shape Update", image: "/assets/before-after/2.png" }
+// Sample data (used if the public folder is missing / empty).
+const fallbackCustomerPhotos = [
+  { id: "fallback-1", src: "/assets/review/1.png", alt: "Customer photo 1" },
+  { id: "fallback-2", src: "/assets/service/1.png", alt: "Customer photo 2" },
+  { id: "fallback-3", src: "/assets/service/2.png", alt: "Customer photo 3" },
+  { id: "fallback-4", src: "/assets/before-after/1.png", alt: "Customer photo 4" },
+  { id: "fallback-5", src: "/assets/before-after/2.png", alt: "Customer photo 5" },
+  { id: "fallback-6", src: "/assets/hero/1.png", alt: "Customer photo 6" },
+  { id: "fallback-7", src: "/assets/hero/1.png", alt: "Customer photo 7" },
+  { id: "fallback-8", src: "/assets/hero/1.png", alt: "Customer photo 8" }
 ];
 
-const reviewCarouselDir = path.join(process.cwd(), "public", "assets", "review-carousel");
-const reviewImagePattern = /\.(png|jpe?g|webp|avif)$/i;
+const customerPhotoDir = path.join(process.cwd(), "public", "assets", "review-carousel");
+const customerPhotoPattern = /\.(png|jpe?g|webp|avif)$/i;
 
-function titleFromFilename(filename, index) {
+function altFromFilename(filename, index) {
   const base = filename.replace(/\.[^.]+$/, "");
   const cleaned = base.replace(/[-_]+/g, " ").trim();
-  if (!cleaned) return `Review ${index + 1}`;
-  return cleaned
+  if (!cleaned) return `Customer photo ${index + 1}`;
+  const titled = cleaned
     .split(" ")
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+  return `Customer photo ${index + 1}: ${titled}`;
 }
 
-function loadReviewCarouselCards() {
+function loadCustomerPhotos() {
   try {
-    if (!fs.existsSync(reviewCarouselDir)) {
-      return fallbackReviewCarouselCards;
-    }
+    if (!fs.existsSync(customerPhotoDir)) return fallbackCustomerPhotos;
 
     const files = fs
-      .readdirSync(reviewCarouselDir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && reviewImagePattern.test(entry.name))
+      .readdirSync(customerPhotoDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && customerPhotoPattern.test(entry.name))
       .map((entry) => entry.name)
       .sort((a, b) => a.localeCompare(b, "en", { numeric: true }));
 
-    if (files.length === 0) {
-      return fallbackReviewCarouselCards;
-    }
+    if (files.length === 0) return fallbackCustomerPhotos;
 
     return files.map((file, index) => ({
-      title: titleFromFilename(file, index),
-      image: `/assets/review-carousel/${file}`
+      id: `customer-${index}-${file}`,
+      src: `/assets/review-carousel/${file}`,
+      alt: altFromFilename(file, index)
     }));
   } catch {
-    return fallbackReviewCarouselCards;
+    return fallbackCustomerPhotos;
   }
 }
 
-const reviewCarouselCards = loadReviewCarouselCards();
+const customerPhotos = loadCustomerPhotos();
 
 export const metadata = {
   title: "고객 후기 스냅 크게보기",
   description: "STYLE LASH 고객 후기 스냅 이미지를 크게 확인해 보세요.",
-  alternates: {
-    canonical: "/snap"
-  },
+  alternates: { canonical: "/snap" },
   openGraph: {
     title: "고객 후기 스냅 크게보기",
     description: "STYLE LASH 고객 후기 스냅 이미지를 크게 확인해 보세요.",
@@ -80,16 +80,14 @@ export default function SnapPage() {
     <main className="snap-page">
       <section className="snap-page-shell">
         <header className="snap-page-head">
-          <p>Review Feed</p>
+          <p>Gallery</p>
           <h1>고객 후기 스냅 크게보기</h1>
           <Link href="/" className="snap-page-back">
             홈으로
           </Link>
         </header>
 
-        <div className="snap-page-carousel" aria-label="고객 후기 스냅 크게보기 캐러셀">
-          <ReviewCarousel cards={reviewCarouselCards} imageSizes="680px" />
-        </div>
+        <PremiumPhotoGalleryCarousel items={customerPhotos} ariaLabel="Customer photo review gallery" />
       </section>
     </main>
   );
