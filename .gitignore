@@ -11,3 +11,4 @@ pnpm-debug.log*
 *.tmp
 .tmp-*
 .vercel
+.npm-cache/
