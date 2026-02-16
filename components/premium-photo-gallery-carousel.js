@@ -192,7 +192,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const [activeIndex, setActiveIndex] = useState(() => mod(initialIndex, items.length || 1));
   const [stageSize, setStageSize] = useState({ w: 0, h: 0, cardW: 0, cardH: 0, nearX: 0, farX: 0 });
   const [dragging, setDragging] = useState(false);
-  // Offset in "slides" from the current activeIndex (can be fractional during drag/settle).
+  // Continuous offset (in slides) relative to activeIndex. May be >1 during drag, but we commit steps during settle.
   const [offsetSlides, setOffsetSlides] = useState(0);
   const [settling, setSettling] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -203,8 +203,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const rafRef = useRef(0);
   const settleRafRef = useRef(0);
   const offsetRef = useRef(0);
-  const settleTargetRef = useRef(0);
   const settleVelRef = useRef(0);
+  const pendingStepsRef = useRef(0);
   const idleUntilRef = useRef(0);
 
   const length = items.length;
@@ -246,6 +246,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     if (settleRafRef.current) cancelAnimationFrame(settleRafRef.current);
     settleRafRef.current = 0;
     settleVelRef.current = 0;
+    pendingStepsRef.current = 0;
     setSettling(false);
   };
 
@@ -272,42 +273,33 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     setSettling(true);
 
     const tick = () => {
-      const target = settleTargetRef.current;
+      const pending = pendingStepsRef.current;
+      const target = pending === 0 ? 0 : clamp(pending, -1, 1); // step-by-step target avoids shake
       const current = offsetRef.current;
       let v = settleVelRef.current;
 
-      // Damped spring (feels like "mobile tension" and stays responsive to rapid inputs).
+      // Damped spring.
       v = v * 0.82 + (target - current) * 0.18;
       let next = current + v;
-      let nextTarget = target;
-      settleVelRef.current = v;
 
-      // Keep render offset within [-1, 1] by committing whole-slide steps as we pass them.
-      // This avoids index-window jitter that can look like "shaking".
-      let commit = 0;
-      while (next > 0.999) {
-        commit += 1;
+      // Commit steps as we pass them, consuming the pending queue.
+      if (next > 0.98 && pendingStepsRef.current > 0) {
+        setActiveIndex((prev) => mod(prev + 1, length));
+        pendingStepsRef.current -= 1;
         next -= 1;
-        nextTarget -= 1;
-      }
-      while (next < -0.999) {
-        commit -= 1;
+      } else if (next < -0.98 && pendingStepsRef.current < 0) {
+        setActiveIndex((prev) => mod(prev - 1, length));
+        pendingStepsRef.current += 1;
         next += 1;
-        nextTarget += 1;
       }
 
-      if (commit) {
-        setActiveIndex((prev) => mod(prev + commit, length));
-      }
-
-      settleTargetRef.current = nextTarget;
+      settleVelRef.current = v;
       setOffset(next);
 
-      const done = Math.abs(nextTarget - next) < 0.002 && Math.abs(v) < 0.002;
+      const done = pendingStepsRef.current === 0 && Math.abs(next) < 0.002 && Math.abs(v) < 0.002;
       if (done) {
         settleRafRef.current = 0;
         settleVelRef.current = 0;
-        settleTargetRef.current = 0;
         setOffset(0);
         setSettling(false);
         return;
@@ -333,7 +325,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       }
 
       // Accumulate rapid clicks (prevents "no response" feel).
-      settleTargetRef.current = clamp(settleTargetRef.current + d, -3, 3);
+      pendingStepsRef.current += d;
       startSettleLoop();
     },
     [length, reducedMotion, setOffset, startSettleLoop]
@@ -352,8 +344,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         return;
       }
 
-      // Override target (used for drag release or "bring to center" click).
-      settleTargetRef.current = s;
+      // Override pending (used for drag release or "bring to center" click).
+      pendingStepsRef.current = s;
       startSettleLoop();
     },
     [length, reducedMotion, setOffset, startSettleLoop]
@@ -396,8 +388,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         rafRef.current = 0;
         dragPxRef.current = dx;
         const rawSlides = -dx / basis;
-        // Visual interpolation stays within a single-step range for stability.
-        setOffset(clamp(tension(rawSlides), -0.98, 0.98));
+        // Allow multi-slide drag preview, with slight resistance.
+        setOffset(clamp(tension(rawSlides), -3, 3));
       });
     }
   };
@@ -508,6 +500,11 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     };
   };
 
+  // Render window derived from current continuous offset.
+  const shift = clamp(Math.trunc(offsetSlides), -3, 3);
+  const local = offsetSlides - shift; // (-1..1)
+  const baseIndex = mod(activeIndex + shift, length || 1);
+
   return (
     <section className="premium-gallery" ref={containerRef} aria-label={ariaLabel}>
       <div
@@ -555,9 +552,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         <div className="premium-gallery-edge premium-gallery-edge--right" aria-hidden="true" />
 
         {SLOT_STYLES.map((slot) => {
-          const index = mod(activeIndex + slot.rel, length || 1);
+          const index = mod(baseIndex + slot.rel, length || 1);
           const item = items[index];
-          const virtual = slot.rel - offsetSlides;
+          const virtual = slot.rel - local;
           const computed = styleAt(virtual);
           const isCenter = Math.abs(virtual) < 0.45;
           const stepsToCenter = slot.rel;
@@ -572,7 +569,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
               onClick={() => (isCenter ? onCenterClick() : navigateToSteps(stepsToCenter))}
               style={{
                 zIndex: computed.zIndex,
-                ["--slot-x"]: `${computed.x.toFixed(3)}px`,
+                ["--slot-x"]: `${Math.round(computed.x)}px`,
                 ["--slot-y"]: `${computed.y}px`,
                 ["--slot-scale"]: computed.scale,
                 ["--slot-brightness"]: computed.brightness,
