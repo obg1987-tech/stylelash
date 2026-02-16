@@ -2930,7 +2930,7 @@ a {
 }
 
 .snap-page {
-  padding: 6.4rem 1.15rem 4.4rem;
+  padding: 6.4rem 0 4.4rem;
   min-height: 100vh;
   background:
     radial-gradient(circle at 18% 10%, #ffffff 0 26%, #f9fcff 56%, #ffffff 100%),
@@ -2940,6 +2940,8 @@ a {
 .snap-page-shell {
   width: 100%;
   margin: 0 auto;
+  --snap-pad: 1.15rem;
+  padding-inline: var(--snap-pad);
   min-height: calc(100vh - 10.8rem);
   display: grid;
   grid-template-rows: auto 1fr;
@@ -2999,6 +3001,9 @@ a {
   --frame-border: #dfe8f2;
   --shadow-ink: #0b1c2f;
   --edge-fade: 76px;
+  /* full-bleed gallery: extend beyond the snap-page-shell padding */
+  width: calc(100% + (var(--snap-pad) * 2));
+  margin-inline: calc(-1 * var(--snap-pad));
 }
 
 .premium-gallery-frame {
@@ -3066,18 +3071,18 @@ a {
   position: absolute;
   inset: 0;
   border-radius: 18px;
-  border: 1px solid var(--frame-border);
+  border: 1px solid #e8eff7;
   background: #ffffff;
   box-shadow:
-    0 calc(18px * var(--slot-shadow)) calc(44px * var(--slot-shadow)) #0b1c2f18,
+    0 calc(14px * var(--slot-shadow)) calc(34px * var(--slot-shadow)) #0b1c2f10,
     0 1px 0 #ffffff,
     0 0 0 1px #ffffff inset;
 }
 
 .premium-slide--center .premium-slide-frame {
-  border-color: #d0dceb;
+  border-color: #dde7f2;
   box-shadow:
-    0 26px 64px #0b1c2f24,
+    0 22px 58px #0b1c2f16,
     0 1px 0 #ffffff,
     0 0 0 1px #ffffff inset;
 }
