@@ -1035,25 +1035,75 @@ a {
 .review-carousel-zoom {
   flex: 0 0 auto;
   margin-top: 0.1rem;
-  padding: 0.45rem 0.7rem;
+  align-self: flex-start;
+}
+
+/* Reusable "Board" pill button style (matches top-nav Board link). */
+.board-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.42rem 0.78rem;
+  border: 1px solid #ccd6e3;
   border-radius: 999px;
-  border: 1px solid #dbe4ef;
-  background: #ffffffd6;
-  color: #233243;
+  background:
+    linear-gradient(160deg, #ffffff9c 0%, #ffffff33 56%),
+    linear-gradient(135deg, #e8eef8d6 0%, #dde5f2ca 50%, #d4dfefc2 100%);
+  color: #141c28;
+  font-weight: 700;
   font-size: 0.78rem;
+  letter-spacing: 0.05em;
   text-decoration: none;
-  letter-spacing: 0.02em;
-  box-shadow: 0 10px 18px #0b1c2f12;
-  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(7px);
+  box-shadow:
+    inset 0 1px 0 #fffffffa,
+    0 8px 16px #8fa1bc30;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    transform 220ms ease,
+    box-shadow 240ms ease,
+    border-color 220ms ease,
+    filter 220ms ease,
+    background 220ms ease;
 }
 
-.review-carousel-zoom:hover {
-  background: #ffffff;
-  transform: translateY(-1px);
-  box-shadow: 0 14px 24px #0b1c2f18;
+.board-pill::after {
+  content: "";
+  position: absolute;
+  inset: -32% auto -32% -130%;
+  width: 42%;
+  transform: rotate(18deg);
+  background: linear-gradient(90deg, #ffffff00, #ffffff66, #ffffff00);
+  transition: transform 680ms ease;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.review-carousel-zoom:focus-visible {
+.board-pill > * {
+  position: relative;
+  z-index: 1;
+}
+
+.board-pill:hover {
+  color: #101824;
+  transform: translateY(-1px) scale(1.01);
+  filter: saturate(0.92) brightness(1.02);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 10px 18px #8fa1bc38;
+  background:
+    linear-gradient(160deg, #ffffffa3 0%, #ffffff38 58%),
+    linear-gradient(135deg, #eef3facf 0%, #e3eaf5c4 54%, #dce5f2bc 100%);
+}
+
+.board-pill:hover::after {
+  transform: translateX(530%) rotate(18deg);
+}
+
+.board-pill:focus-visible {
   outline: 3px solid #90b4ff;
   outline-offset: 3px;
 }

@@ -325,7 +325,7 @@ export default function Home() {
                 <p>Review Feed</p>
                 <h3>고객 후기 스냅</h3>
               </div>
-              <a className="review-carousel-zoom" href="/snap">
+              <a className="review-carousel-zoom board-pill" href="/snap">
                 크게보기
               </a>
             </div>
