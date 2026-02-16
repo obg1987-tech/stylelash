@@ -15,43 +15,137 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-function getDragProfile(pointerType, viewportWidth) {
+function applyDragResistance(rawSlides, maxPreview) {
+  const abs = Math.abs(rawSlides);
+  if (abs <= 1) return rawSlides;
+  const beyond = abs - 1;
+  const resisted = 1 + beyond / (1 + beyond * 0.85);
+  return clamp(Math.sign(rawSlides) * resisted, -maxPreview, maxPreview);
+}
+
+function estimateVelocityPxMs(samples, now, windowMs) {
+  if (!samples || samples.length < 2) return 0;
+  const cutoff = now - windowMs;
+  const recent = samples.filter((s) => s.t >= cutoff);
+  if (recent.length < 2) return 0;
+
+  // Weighted average where newer samples have more influence.
+  let weighted = 0;
+  let weightSum = 0;
+  for (let i = 1; i < recent.length; i += 1) {
+    const prev = recent[i - 1];
+    const curr = recent[i];
+    const dt = Math.max(1, curr.t - prev.t);
+    const vx = (curr.x - prev.x) / dt;
+    const w = i;
+    weighted += vx * w;
+    weightSum += w;
+  }
+  return weightSum > 0 ? weighted / weightSum : 0;
+}
+
+function isIOSLikeDevice() {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function inferTrackpadLike(samples) {
+  if (!samples || samples.length < 5) return false;
+  let dxSum = 0;
+  let dtSum = 0;
+  let n = 0;
+  for (let i = 1; i < samples.length; i += 1) {
+    const prev = samples[i - 1];
+    const curr = samples[i];
+    dxSum += Math.abs(curr.x - prev.x);
+    dtSum += Math.max(1, curr.t - prev.t);
+    n += 1;
+  }
+  if (!n) return false;
+  const avgDx = dxSum / n;
+  const avgDt = dtSum / n;
+  return avgDx < 2.6 && avgDt < 12;
+}
+
+function getDragProfile(pointerType, viewportWidth, options = {}) {
+  const { isIOS = false, isTrackpadLike = false } = options;
   const type = pointerType || "mouse";
   const isNarrow = viewportWidth > 0 && viewportWidth <= 440;
 
   if (type === "touch") {
+    const iosBoost = isIOS ? 0.03 : 0;
     return {
-      basisScale: isNarrow ? 0.74 : 0.78,
-      threshold: isNarrow ? 0.16 : 0.18,
-      flickVelocity: 0.34,
-      velocityDeadzone: 0.06,
-      velocityBlend: 0.38,
-      projectBoost: 180,
+      basisScale: isNarrow ? 0.71 : 0.76,
+      threshold: (isNarrow ? 0.14 : 0.17) - (isIOS ? 0.01 : 0),
+      flickVelocity: 0.32,
+      flickSlidesPerSec: 1.12,
+      velocityDeadzone: 0.045,
+      velocityWindowMs: isIOS ? 110 : 90,
+      momentumSeconds: 0.21 + iosBoost,
+      snapBias: 0.12,
+      maxPreview: 2.15,
+      followLerp: isIOS ? 0.84 : 0.78,
       maxSteps: 2
     };
   }
 
   if (type === "pen") {
     return {
-      basisScale: 0.86,
-      threshold: 0.2,
-      flickVelocity: 0.42,
-      velocityDeadzone: 0.05,
-      velocityBlend: 0.3,
-      projectBoost: 160,
+      basisScale: 0.84,
+      threshold: 0.19,
+      flickVelocity: 0.4,
+      flickSlidesPerSec: 1.2,
+      velocityDeadzone: 0.04,
+      velocityWindowMs: 85,
+      momentumSeconds: 0.18,
+      snapBias: 0.1,
+      maxPreview: 2.3,
+      followLerp: 0.72,
       maxSteps: 2
     };
   }
 
+  if (isTrackpadLike) {
+    return {
+      basisScale: 0.84,
+      threshold: 0.2,
+      flickVelocity: 0.4,
+      flickSlidesPerSec: 1.06,
+      velocityDeadzone: 0.03,
+      velocityWindowMs: 96,
+      momentumSeconds: 0.19,
+      snapBias: 0.1,
+      maxPreview: 2.45,
+      followLerp: 0.74,
+      maxSteps: 3
+    };
+  }
+
   return {
-    basisScale: 0.94,
-    threshold: 0.24,
-    flickVelocity: 0.52,
-    velocityDeadzone: 0.04,
-    velocityBlend: 0.24,
-    projectBoost: 140,
+    basisScale: 0.9,
+    threshold: 0.22,
+    flickVelocity: 0.5,
+    flickSlidesPerSec: 1.28,
+    velocityDeadzone: 0.035,
+    velocityWindowMs: 80,
+    momentumSeconds: 0.16,
+    snapBias: 0.08,
+    maxPreview: 2.8,
+    followLerp: 0.66,
     maxSteps: 3
   };
+}
+
+function getSettleProfile(pointerType) {
+  const type = pointerType || "mouse";
+  if (type === "touch") {
+    return { k: 40, d: 12.5, velocityGain: 0.5, maxSeedVelocity: 4.8 };
+  }
+  if (type === "pen") {
+    return { k: 42, d: 13, velocityGain: 0.46, maxSeedVelocity: 5.2 };
+  }
+  return { k: 46, d: 14.5, velocityGain: 0.42, maxSeedVelocity: 5.8 };
 }
 
 function usePrefersReducedMotion() {
@@ -245,6 +339,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const settleTargetRef = useRef(0);
   const settleVelRef = useRef(0);
   const settleTimeRef = useRef(0);
+  const settleKRef = useRef(44);
+  const settleDRef = useRef(14);
   const idleUntilRef = useRef(0);
 
   const length = items.length;
@@ -294,10 +390,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const basisBase = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
 
   const tension = useCallback(
-    (rawSlides) => {
-      // Keep drag response close to finger/mouse movement without over-compression.
-      return clamp(rawSlides * 0.98, -1.1, 1.1);
-    },
+    (rawSlides, maxPreview) => applyDragResistance(rawSlides, maxPreview),
     []
   );
 
@@ -305,6 +398,33 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     offsetRef.current = value;
     setOffsetSlides(value);
   }, []);
+
+  const startDragLoop = useCallback(() => {
+    if (rafRef.current) return;
+
+    const tick = () => {
+      const s = dragStateRef.current;
+      if (!s) {
+        rafRef.current = 0;
+        return;
+      }
+
+      const viewportWidth = s.viewportWidth || (typeof window !== "undefined" ? window.innerWidth : 0);
+      const profile = getDragProfile(s.pointerType, viewportWidth, {
+        isIOS: s.isIOS,
+        isTrackpadLike: s.isTrackpadLike
+      });
+      const dragBasis = basisBase * profile.basisScale;
+      const rawSlides = -s.pendingDx / Math.max(1, dragBasis);
+      const targetOffset = tension(rawSlides, profile.maxPreview);
+      const smoothedOffset = offsetRef.current + (targetOffset - offsetRef.current) * profile.followLerp;
+      setOffset(smoothedOffset);
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+  }, [basisBase, setOffset, tension]);
 
   const startSettleLoop = useCallback(() => {
     if (settleRafRef.current) return;
@@ -321,8 +441,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
 
       // Critically-damped-ish spring. v is in slides/sec.
       const diff = target - current;
-      const k = 44; // stiffness
-      const d = 14; // damping
+      const k = settleKRef.current; // stiffness
+      const d = settleDRef.current; // damping
       v += diff * k * dt;
       v *= Math.exp(-d * dt);
       let next = current + v * dt;
@@ -373,6 +493,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       }
 
       // Accumulate rapid clicks (prevents "no response" feel).
+      settleKRef.current = 44;
+      settleDRef.current = 14;
       settleTargetRef.current = clamp(settleTargetRef.current + d, -12, 12);
       startSettleLoop();
     },
@@ -380,7 +502,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   );
 
   const navigateToSteps = useCallback(
-    (steps) => {
+    (steps, options = {}) => {
       if (!length) return;
       idleUntilRef.current = Date.now() + 3500;
       const s = clamp(steps, -3, 3);
@@ -393,6 +515,11 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       }
 
       // Override target (used for drag release or "bring to center" click).
+      settleKRef.current = options.k || 44;
+      settleDRef.current = options.d || 14;
+      if (typeof options.seedVelocity === "number") {
+        settleVelRef.current = options.seedVelocity;
+      }
       settleTargetRef.current = s;
       startSettleLoop();
     },
@@ -413,10 +540,16 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       lastX: event.clientX,
       startTime: performance.now(),
       lastTime: performance.now(),
-      vx: 0
+      vx: 0,
+      samples: [{ x: event.clientX, t: performance.now() }],
+      pendingDx: 0,
+      viewportWidth: typeof window !== "undefined" ? window.innerWidth : 0,
+      isIOS: isIOSLikeDevice(),
+      isTrackpadLike: false
     };
 
     event.currentTarget.setPointerCapture?.(event.pointerId);
+    startDragLoop();
   };
 
   const onPointerMove = (event) => {
@@ -424,60 +557,72 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     if (!s || s.id !== event.pointerId) return;
     event.preventDefault();
 
-    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0;
-    const profile = getDragProfile(s.pointerType, viewportWidth);
+    s.viewportWidth = typeof window !== "undefined" ? window.innerWidth : s.viewportWidth;
     const now = performance.now();
     const dx = event.clientX - s.startX;
-    const dt = Math.max(1, now - s.lastTime);
-    const step = event.clientX - s.lastX;
-    const instantV = step / dt; // px/ms
-    // Smooth noisy sampling so flick direction is stable across devices.
-    s.vx = s.vx * (1 - profile.velocityBlend) + instantV * profile.velocityBlend;
+    s.samples.push({ x: event.clientX, t: now });
+    if (s.samples.length > 9) s.samples.shift();
+    if (s.pointerType === "mouse") {
+      s.isTrackpadLike = inferTrackpadLike(s.samples);
+    }
+    const profile = getDragProfile(s.pointerType, s.viewportWidth, {
+      isIOS: s.isIOS,
+      isTrackpadLike: s.isTrackpadLike
+    });
+    s.vx = estimateVelocityPxMs(s.samples, now, profile.velocityWindowMs);
     s.lastX = event.clientX;
     s.lastTime = now;
-
-    if (!rafRef.current) {
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = 0;
-        dragPxRef.current = dx;
-        const dragBasis = basisBase * profile.basisScale;
-        const rawSlides = -dx / Math.max(1, dragBasis);
-        setOffset(tension(rawSlides));
-      });
-    }
+    s.pendingDx = dx;
+    dragPxRef.current = dx;
+    startDragLoop();
   };
 
   const finishDrag = (event) => {
     const s = dragStateRef.current;
     if (!s || (event && s.id !== event.pointerId)) return;
 
-    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0;
-    const profile = getDragProfile(s.pointerType, viewportWidth);
+    const profile = getDragProfile(s.pointerType, s.viewportWidth, {
+      isIOS: s.isIOS,
+      isTrackpadLike: s.isTrackpadLike
+    });
     const latestDx = event ? event.clientX - s.startX : dragPxRef.current;
     const dx = Number.isFinite(latestDx) ? latestDx : dragPxRef.current;
     const releaseBasis = basisBase * profile.basisScale;
     const rawSlides = -dx / Math.max(1, releaseBasis);
-    const projectedSlides = rawSlides + clamp((-s.vx * profile.projectBoost) / Math.max(1, releaseBasis), -0.28, 0.28);
+    const velocitySlidesPerSec = (-s.vx * 1000) / Math.max(1, releaseBasis);
+    const projectedSlides = rawSlides + velocitySlidesPerSec * profile.momentumSeconds;
     const flick = Math.abs(s.vx) > profile.flickVelocity;
     const farEnough = Math.abs(projectedSlides) > profile.threshold;
-    const absProjected = Math.abs(projectedSlides);
     const velocityDirection = Math.abs(s.vx) >= profile.velocityDeadzone ? Math.sign(-s.vx) : 0;
+    const projectedDirection = Math.sign(projectedSlides);
     const direction = farEnough ? Math.sign(projectedSlides) : velocityDirection;
     let steps = 0;
     if (farEnough || flick) {
-      const baseSteps = Math.floor(absProjected + 0.55);
-      const flickSteps = flick ? 1 : 0;
-      const fastFlickBonus = Math.abs(s.vx) > profile.flickVelocity * 1.85 ? 1 : 0;
-      steps = clamp(Math.max(baseSteps, flickSteps) + fastFlickBonus, 1, profile.maxSteps);
+      const snapBase = projectedSlides + profile.snapBias * projectedDirection;
+      const velocityPower = Math.max(0, Math.abs(velocitySlidesPerSec) - profile.flickSlidesPerSec) * 0.42;
+      const baseSteps = Math.round(Math.abs(snapBase) + velocityPower);
+      const flickStrong = Math.abs(velocitySlidesPerSec) > profile.flickSlidesPerSec;
+      const minFlickStep = flickStrong ? 1 : 0;
+      steps = clamp(Math.max(baseSteps, minFlickStep), 1, profile.maxSteps);
     }
     const target = direction ? direction * steps : 0;
+    const settleProfile = getSettleProfile(s.pointerType);
+    const seedVelocity = clamp(
+      velocitySlidesPerSec * settleProfile.velocityGain,
+      -settleProfile.maxSeedVelocity,
+      settleProfile.maxSeedVelocity
+    );
 
     stopRaf();
     dragStateRef.current = null;
     setDragging(false);
     dragPxRef.current = 0;
 
-    navigateToSteps(target);
+    navigateToSteps(target, {
+      seedVelocity: target ? seedVelocity : 0,
+      k: settleProfile.k,
+      d: settleProfile.d
+    });
   };
 
   const onKeyDown = (event) => {
@@ -551,14 +696,19 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     const shadow =
       absPos <= 1 ? 1 - 0.22 * absPos : 0.78 - 0.18 * clamp(absPos - 1, 0, 1);
     const zIndex = 100 - Math.round(absPos * 12);
+    const motionSoft = dragging || settling ? 0.34 : 0;
+    const baseScale = lerp(sa.scale, sb.scale);
+    const baseBrightness = lerp(sa.brightness, sb.brightness);
+    const baseBlur = lerp(sa.blur, sb.blur);
+    const baseOpacity = lerp(sa.opacity, sb.opacity);
 
     return {
       x,
       y: lerp(sa.y, sb.y),
-      scale: lerp(sa.scale, sb.scale),
-      brightness: lerp(sa.brightness, sb.brightness),
-      blur: lerp(sa.blur, sb.blur),
-      opacity: lerp(sa.opacity, sb.opacity),
+      scale: baseScale + (1 - baseScale) * motionSoft * 0.2,
+      brightness: baseBrightness + (1 - baseBrightness) * motionSoft * 0.45,
+      blur: baseBlur * (1 - motionSoft * 0.42),
+      opacity: baseOpacity + (1 - baseOpacity) * motionSoft * 0.28,
       shadow,
       zIndex
     };
