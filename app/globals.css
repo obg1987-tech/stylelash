@@ -3326,6 +3326,11 @@ a {
   overflow: hidden;
 }
 
+.premium-slide--center .premium-slide-media img {
+  /* Subtle "hero" pop without adding text or overlays. */
+  filter: contrast(1.04) saturate(1.03);
+}
+
 .premium-slide-aspect {
   position: absolute;
   inset: 0;
@@ -3346,8 +3351,10 @@ a {
   inset: 0;
   z-index: 9999;
   background:
-    radial-gradient(circle at 50% 20%, #ffffff0a 0 32%, #000000c7 100%),
-    #05070b;
+    radial-gradient(circle at 50% 24%, #23314a 0%, #0c101a 44%, #070a10 86%),
+    radial-gradient(circle at 18% 20%, #1b2436 0%, #070a10 52%),
+    radial-gradient(circle at 86% 28%, #131b2b 0%, #070a10 56%),
+    linear-gradient(180deg, #070a10 0%, #0a0e18 55%, #070a10 100%);
   display: grid;
   align-items: center;
   justify-items: center;
@@ -3357,17 +3364,18 @@ a {
   position: absolute;
   top: 18px;
   right: 18px;
-  border: 1px solid #ffffff3a;
-  background: #ffffff12;
+  border: 1px solid #ffffff2f;
+  background: #0b0f16b8;
   color: #ffffff;
   border-radius: 999px;
   padding: 0.55rem 0.8rem;
   font-size: 0.9rem;
   cursor: pointer;
+  backdrop-filter: blur(10px);
 }
 
 .premium-lightbox-close:hover {
-  background: #ffffff1a;
+  background: #0b0f16e6;
 }
 
 .premium-lightbox-close:focus-visible {
@@ -3388,9 +3396,9 @@ a {
   height: 100%;
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid #ffffff1f;
-  box-shadow: 0 30px 90px #00000080;
-  background: #0b0f16;
+  border: 1px solid #ffffff24;
+  box-shadow: 0 34px 110px #0000008c;
+  background: #05070b;
 }
 
 /* Invisible click zones for prev/next (no visible UI). */
