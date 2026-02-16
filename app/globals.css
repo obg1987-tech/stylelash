@@ -3014,10 +3014,12 @@ a {
 .snap-page {
   padding: 6.4rem 0 4.4rem;
   min-height: 100vh;
+  --snap-bg-solid: #070a10;
   background:
-    radial-gradient(circle at 18% 10%, #ffffff 0 24%, #f7fbff 58%, #ffffff 100%),
-    radial-gradient(circle at 52% 38%, #ffffff 0 30%, #f3f8fd 74%, #eff5fb 100%),
-    linear-gradient(180deg, #ffffff 0%, #fbfdff 60%, #ffffff 100%);
+    radial-gradient(circle at 50% 24%, #23314a 0%, #0c101a 44%, #070a10 86%),
+    radial-gradient(circle at 18% 20%, #1b2436 0%, #070a10 52%),
+    radial-gradient(circle at 86% 28%, #131b2b 0%, #070a10 56%),
+    linear-gradient(180deg, #070a10 0%, #0a0e18 55%, #070a10 100%);
 }
 
 .snap-page-shell {
@@ -3097,11 +3099,11 @@ a {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(circle at 50% 42%, #ffffff 0 26%, #ffffff00 60%),
-    radial-gradient(circle at 50% 46%, #0b1c2f10 0%, #0b1c2f00 62%),
-    radial-gradient(circle at 14% 50%, #0b1c2f0a 0%, #0b1c2f00 60%),
-    radial-gradient(circle at 86% 50%, #0b1c2f0a 0%, #0b1c2f00 60%);
-  opacity: 0.9;
+    radial-gradient(circle at 50% 42%, #ffffff14 0 16%, #ffffff00 60%),
+    radial-gradient(circle at 50% 56%, #00000066 0%, #00000000 62%),
+    radial-gradient(circle at 14% 50%, #00000055 0%, #00000000 60%),
+    radial-gradient(circle at 86% 50%, #00000055 0%, #00000000 60%);
+  opacity: 1;
 }
 
 .premium-gallery-frame {
@@ -3123,11 +3125,11 @@ a {
   inset: -10% -6%;
   pointer-events: none;
   z-index: 1;
-  /* Subtle "floor" shadow + vignette to make photos pop without leaving crystal-white theme. */
+  /* Subtle "floor" shadow + vignette for a gallery/theater feel. */
   background:
-    radial-gradient(ellipse at 50% 72%, #0b1c2f14 0%, #0b1c2f00 58%),
-    radial-gradient(circle at 50% 46%, #ffffff00 0%, #0b1c2f10 62%, #0b1c2f14 100%);
-  opacity: 0.55;
+    radial-gradient(ellipse at 50% 74%, #00000080 0%, #00000000 58%),
+    radial-gradient(circle at 50% 46%, #00000000 0%, #00000055 62%, #00000078 100%);
+  opacity: 0.6;
 }
 
 .premium-gallery-frame:active {
@@ -3144,12 +3146,13 @@ a {
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  border: 1px solid #e5eef7;
-  background: #ffffffcc;
-  color: #233243;
+  border: 1px solid #ffffff2a;
+  background: #0b0f16b8;
+  color: #ffffff;
   font-size: 0;
   cursor: pointer;
-  box-shadow: 0 16px 28px #0b1c2f12;
+  box-shadow: 0 16px 28px #0000006b;
+  backdrop-filter: blur(10px);
   opacity: 0;
   transition: opacity 200ms ease, transform 200ms ease, background 200ms ease;
 }
@@ -3160,7 +3163,7 @@ a {
 }
 
 .premium-gallery-nav:hover {
-  background: #ffffff;
+  background: #0b0f16e6;
   transform: translate3d(var(--nav-x, 0px), calc(-50% - 1px), 0);
 }
 
@@ -3186,8 +3189,8 @@ a {
   margin: auto;
   width: 10px;
   height: 10px;
-  border-right: 2px solid #233243;
-  border-bottom: 2px solid #233243;
+  border-right: 2px solid #ffffffd6;
+  border-bottom: 2px solid #ffffffd6;
   transform: rotate(135deg);
 }
 
@@ -3238,12 +3241,12 @@ a {
 
 .premium-gallery-edge--left {
   left: 0;
-  background: linear-gradient(90deg, #ffffff 0%, #ffffff00 100%);
+  background: linear-gradient(90deg, var(--snap-bg-solid) 0%, #00000000 100%);
 }
 
 .premium-gallery-edge--right {
   right: 0;
-  background: linear-gradient(270deg, #ffffff 0%, #ffffff00 100%);
+  background: linear-gradient(270deg, var(--snap-bg-solid) 0%, #00000000 100%);
 }
 
 .premium-slide {
