@@ -188,42 +188,21 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const [activeIndex, setActiveIndex] = useState(() => mod(initialIndex, items.length || 1));
   const [stageSize, setStageSize] = useState({ w: 0, h: 0, cardW: 0, cardH: 0, nearX: 0, farX: 0 });
   const [dragging, setDragging] = useState(false);
-  const [dragX, setDragXState] = useState(0);
+  // Offset in "slides" from the current activeIndex (can be fractional during drag/settle).
+  const [offsetSlides, setOffsetSlides] = useState(0);
+  const [settling, setSettling] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const dragXRef = useRef(0);
+  const dragPxRef = useRef(0);
   const dragStateRef = useRef(null);
   const rafRef = useRef(0);
+  const settleRafRef = useRef(0);
   const idleUntilRef = useRef(0);
 
   const length = items.length;
 
-  const visible = useMemo(() => {
-    if (!length) return [];
-    return SLOT_STYLES.map((slot) => {
-      const i = mod(activeIndex + slot.rel, length);
-      return { slot, index: i, item: items[i] };
-    });
-  }, [activeIndex, items, length]);
-
-  const go = useCallback(
-    (delta) => {
-      if (!length) return;
-      setActiveIndex((prev) => mod(prev + delta, length));
-      idleUntilRef.current = Date.now() + 3500;
-    },
-    [length]
-  );
-
-  const setActiveByIndex = useCallback(
-    (index) => {
-      if (!length) return;
-      setActiveIndex(mod(index, length));
-      idleUntilRef.current = Date.now() + 3500;
-    },
-    [length]
-  );
+  // Visible items are derived at render-time from (activeIndex + offsetSlides) so we don't memoize a stale window.
 
   const measure = useCallback(() => {
     const el = containerRef.current;
@@ -251,19 +230,79 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     return () => ro.disconnect();
   }, [measure]);
 
-  const setDragX = useCallback((value) => {
-    dragXRef.current = value;
-    setDragXState(value);
-  }, []);
-
   const stopRaf = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = 0;
   };
 
+  const stopSettle = () => {
+    if (settleRafRef.current) cancelAnimationFrame(settleRafRef.current);
+    settleRafRef.current = 0;
+    setSettling(false);
+  };
+
+  const basis = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
+
+  const tension = useCallback(
+    (rawSlides) => {
+      // Resist large drags slightly, but still allow multi-slide movement.
+      const s = rawSlides;
+      const abs = Math.abs(s);
+      if (abs < 0.001) return 0;
+      return Math.sign(s) * (abs / (1 + abs * 0.18));
+    },
+    []
+  );
+
+  const animateTo = useCallback(
+    (steps) => {
+      if (!length) return;
+      idleUntilRef.current = Date.now() + 3500;
+
+      if (reducedMotion) {
+        if (steps) {
+          setActiveIndex((prev) => mod(prev + steps, length));
+        }
+        setOffsetSlides(0);
+        setSettling(false);
+        return;
+      }
+
+      stopSettle();
+      setSettling(true);
+      const start = performance.now();
+      const from = offsetSlides;
+      const to = steps;
+      const duration = 520;
+
+      // Ease-out with a tiny "tension" feeling (no overshoot for multi-step moves).
+      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+      const tick = (now) => {
+        const p = Math.min(1, (now - start) / duration);
+        const e = easeOut(p);
+        setOffsetSlides(from + (to - from) * e);
+        if (p < 1) {
+          settleRafRef.current = requestAnimationFrame(tick);
+        } else {
+          settleRafRef.current = 0;
+          if (steps) {
+            setActiveIndex((prev) => mod(prev + steps, length));
+          }
+          setOffsetSlides(0);
+          setSettling(false);
+        }
+      };
+
+      settleRafRef.current = requestAnimationFrame(tick);
+    },
+    [length, offsetSlides, reducedMotion]
+  );
+
   const onPointerDown = (event) => {
     if (!length) return;
     event.preventDefault();
+    stopSettle();
     setDragging(true);
     idleUntilRef.current = Date.now() + 4000;
 
@@ -295,7 +334,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     if (!rafRef.current) {
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = 0;
-        setDragX(dx);
+        dragPxRef.current = dx;
+        const rawSlides = -dx / basis;
+        setOffsetSlides(tension(rawSlides));
       });
     }
   };
@@ -304,37 +345,32 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     const s = dragStateRef.current;
     if (!s || (event && s.id !== event.pointerId)) return;
 
-    const dx = dragXRef.current;
-    const dt = Math.max(1, performance.now() - s.startTime);
-    const vx = dx / dt; // px/ms
-    const flick = Math.abs(vx) > 0.7 || Math.abs(s.vx) > 0.7;
+    const dx = dragPxRef.current;
+    const vSlides = -s.vx / basis; // slides/ms
+    const rawSlides = -dx / basis;
+    const projected = rawSlides + clamp(vSlides * 240, -1.25, 1.25);
 
-    // Snap to nearest slide(s) based on drag distance, with a small flick override.
-    const basis = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
-    const stepsByDistance = clamp(Math.round(dx / basis), -3, 3);
-    const threshold = Math.max(40, stageSize.cardW * 0.1);
-    const steps = Math.abs(dx) > threshold ? stepsByDistance : 0;
-
-    if (steps !== 0) {
-      go(-steps);
-    } else if (flick) {
-      go(dx > 0 ? -1 : 1);
-    }
+    // Small drag can result in no change. Stronger drag or flick advances 1+.
+    const flick = Math.abs(s.vx) > 0.65;
+    const threshold = 0.33;
+    const target = !flick && Math.abs(projected) < threshold ? 0 : clamp(Math.round(projected), -3, 3);
 
     stopRaf();
     dragStateRef.current = null;
-    setDragX(0);
     setDragging(false);
+    dragPxRef.current = 0;
+
+    animateTo(target);
   };
 
   const onKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      go(-1);
+      animateTo(-1);
     }
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      go(1);
+      animateTo(1);
     }
     if (event.key === "Enter" || event.key === " ") {
       // If focused on the carousel container, open the center slide.
@@ -353,11 +389,11 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       const now = Date.now();
       if (hovered || dragging || lightboxOpen) return;
       if (now < idleUntilRef.current) return;
-      go(1);
+      animateTo(1);
     }, 4200);
 
     return () => window.clearInterval(id);
-  }, [dragging, go, hovered, length, lightboxOpen, reducedMotion]);
+  }, [animateTo, dragging, hovered, length, lightboxOpen, reducedMotion]);
 
   const onCenterClick = () => {
     setLightboxOpen(true);
@@ -377,8 +413,10 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     return map;
   }, []);
 
-  const basis = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
-  const t = dragging ? clamp(-dragX / basis, -1, 1) : 0; // fraction of one slide
+  // Stabilize indices while allowing multi-slide drags by re-centering around the nearest integer.
+  const roundedShift = clamp(Math.round(offsetSlides), -3, 3);
+  const local = offsetSlides - roundedShift; // [-0.5..0.5] typically, continuous during settle
+  const baseIndex = mod(activeIndex + roundedShift, length || 1);
 
   const styleAt = (pos) => {
     const clamped = clamp(pos, -2, 2);
@@ -443,7 +481,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           className="premium-gallery-nav premium-gallery-nav--left"
           aria-label="Previous photo"
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => go(-1)}
+          onClick={() => animateTo(-1)}
         >
           Prev
         </button>
@@ -452,7 +490,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           className="premium-gallery-nav premium-gallery-nav--right"
           aria-label="Next photo"
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => go(1)}
+          onClick={() => animateTo(1)}
         >
           Next
         </button>
@@ -460,10 +498,13 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         <div className="premium-gallery-edge premium-gallery-edge--left" aria-hidden="true" />
         <div className="premium-gallery-edge premium-gallery-edge--right" aria-hidden="true" />
 
-        {visible.map(({ slot, index, item }) => {
-          const virtual = slot.rel - t;
+        {SLOT_STYLES.map((slot) => {
+          const index = mod(baseIndex + slot.rel, length || 1);
+          const item = items[index];
+          const virtual = slot.rel - local;
           const computed = styleAt(virtual);
           const isCenter = Math.abs(virtual) < 0.45;
+          const stepsToCenter = roundedShift + slot.rel;
 
           // Fill the container with 5 visible slides without gaps by allowing controlled overlap.
           return (
@@ -472,7 +513,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
               type="button"
               className={`premium-slide${isCenter ? " premium-slide--center" : ""}`}
               aria-label={isCenter ? "Open fullscreen photo" : "Bring photo to center"}
-              onClick={() => (isCenter ? onCenterClick() : setActiveByIndex(index))}
+              onClick={() => (isCenter ? onCenterClick() : animateTo(stepsToCenter))}
               style={{
                 zIndex: computed.zIndex,
                 ["--slot-x"]: `${Math.round(computed.x)}px`,
@@ -482,7 +523,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
                 ["--slot-blur"]: `${computed.blur}px`,
                 ["--slot-opacity"]: computed.opacity,
                 ["--slot-shadow"]: computed.shadow,
-                transition: dragging || reducedMotion ? "none" : undefined
+                transition: dragging || settling || reducedMotion ? "none" : undefined
               }}
             >
               <span className="premium-slide-frame" aria-hidden="true" />
