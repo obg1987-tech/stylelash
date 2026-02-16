@@ -278,21 +278,38 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
 
       // Damped spring (feels like "mobile tension" and stays responsive to rapid inputs).
       v = v * 0.82 + (target - current) * 0.18;
-      const next = current + v;
+      let next = current + v;
+      let nextTarget = target;
       settleVelRef.current = v;
+
+      // Keep render offset within [-1, 1] by committing whole-slide steps as we pass them.
+      // This avoids index-window jitter that can look like "shaking".
+      let commit = 0;
+      while (next > 0.999) {
+        commit += 1;
+        next -= 1;
+        nextTarget -= 1;
+      }
+      while (next < -0.999) {
+        commit -= 1;
+        next += 1;
+        nextTarget += 1;
+      }
+
+      if (commit) {
+        setActiveIndex((prev) => mod(prev + commit, length));
+      }
+
+      settleTargetRef.current = nextTarget;
       setOffset(next);
 
-      const done = Math.abs(target - next) < 0.002 && Math.abs(v) < 0.002;
+      const done = Math.abs(nextTarget - next) < 0.002 && Math.abs(v) < 0.002;
       if (done) {
-        const steps = clamp(Math.round(target), -3, 3);
         settleRafRef.current = 0;
         settleVelRef.current = 0;
         settleTargetRef.current = 0;
         setOffset(0);
         setSettling(false);
-        if (steps) {
-          setActiveIndex((prev) => mod(prev + steps, length));
-        }
         return;
       }
 
@@ -379,7 +396,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         rafRef.current = 0;
         dragPxRef.current = dx;
         const rawSlides = -dx / basis;
-        setOffset(tension(rawSlides));
+        // Visual interpolation stays within a single-step range for stability.
+        setOffset(clamp(tension(rawSlides), -0.98, 0.98));
       });
     }
   };
@@ -455,11 +473,6 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     for (const style of SLOT_STYLES) map.set(style.rel, style);
     return map;
   }, []);
-
-  // Stabilize indices while allowing multi-slide drags by re-centering around the nearest integer.
-  const roundedShift = clamp(Math.round(offsetSlides), -3, 3);
-  const local = offsetSlides - roundedShift; // [-0.5..0.5] typically, continuous during settle
-  const baseIndex = mod(activeIndex + roundedShift, length || 1);
 
   const styleAt = (pos) => {
     const clamped = clamp(pos, -2, 2);
@@ -542,12 +555,12 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         <div className="premium-gallery-edge premium-gallery-edge--right" aria-hidden="true" />
 
         {SLOT_STYLES.map((slot) => {
-          const index = mod(baseIndex + slot.rel, length || 1);
+          const index = mod(activeIndex + slot.rel, length || 1);
           const item = items[index];
-          const virtual = slot.rel - local;
+          const virtual = slot.rel - offsetSlides;
           const computed = styleAt(virtual);
           const isCenter = Math.abs(virtual) < 0.45;
-          const stepsToCenter = roundedShift + slot.rel;
+          const stepsToCenter = slot.rel;
 
           // Fill the container with 5 visible slides without gaps by allowing controlled overlap.
           return (
@@ -559,7 +572,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
               onClick={() => (isCenter ? onCenterClick() : navigateToSteps(stepsToCenter))}
               style={{
                 zIndex: computed.zIndex,
-                ["--slot-x"]: `${Math.round(computed.x)}px`,
+                ["--slot-x"]: `${computed.x.toFixed(3)}px`,
                 ["--slot-y"]: `${computed.y}px`,
                 ["--slot-scale"]: computed.scale,
                 ["--slot-brightness"]: computed.brightness,
