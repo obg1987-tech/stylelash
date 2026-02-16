@@ -3013,6 +3013,71 @@ a {
   outline: none;
   overflow: hidden;
   background: transparent;
+  touch-action: pan-y;
+  user-select: none;
+  cursor: grab;
+}
+
+.premium-gallery-frame:active {
+  cursor: grabbing;
+}
+
+.premium-gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid #e5eef7;
+  background: #ffffffcc;
+  color: #233243;
+  font-size: 0;
+  cursor: pointer;
+  box-shadow: 0 16px 28px #0b1c2f12;
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease, background 200ms ease;
+}
+
+.premium-gallery-frame:hover .premium-gallery-nav,
+.premium-gallery-nav:focus-visible {
+  opacity: 1;
+}
+
+.premium-gallery-nav:hover {
+  background: #ffffff;
+  transform: translateY(calc(-50% - 1px));
+}
+
+.premium-gallery-nav:focus-visible {
+  outline: 3px solid #90b4ff;
+  outline-offset: 3px;
+}
+
+.premium-gallery-nav--left {
+  left: 14px;
+}
+
+.premium-gallery-nav--right {
+  right: 14px;
+}
+
+.premium-gallery-nav--left::before,
+.premium-gallery-nav--right::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid #233243;
+  border-bottom: 2px solid #233243;
+  transform: rotate(135deg);
+}
+
+.premium-gallery-nav--right::before {
+  transform: rotate(-45deg);
 }
 
 /* Ultra-subtle grain to avoid "flat cheap white" without looking noisy. */

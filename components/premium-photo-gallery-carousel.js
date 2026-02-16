@@ -310,8 +310,15 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     const vx = dx / dt; // px/ms
     const flick = Math.abs(vx) > 0.7 || Math.abs(s.vx) > 0.7;
 
-    const threshold = Math.max(55, stageSize.cardW * 0.14);
-    if (Math.abs(dx) > threshold || flick) {
+    // Snap to nearest slide(s) based on drag distance, with a small flick override.
+    const basis = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
+    const stepsByDistance = clamp(Math.round(dx / basis), -3, 3);
+    const threshold = Math.max(40, stageSize.cardW * 0.1);
+    const steps = Math.abs(dx) > threshold ? stepsByDistance : 0;
+
+    if (steps !== 0) {
+      go(-steps);
+    } else if (flick) {
       go(dx > 0 ? -1 : 1);
     }
 
@@ -394,6 +401,25 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           ["--card-h"]: `${stageSize.cardH}px`
         }}
       >
+        <button
+          type="button"
+          className="premium-gallery-nav premium-gallery-nav--left"
+          aria-label="Previous photo"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => go(-1)}
+        >
+          Prev
+        </button>
+        <button
+          type="button"
+          className="premium-gallery-nav premium-gallery-nav--right"
+          aria-label="Next photo"
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={() => go(1)}
+        >
+          Next
+        </button>
+
         <div className="premium-gallery-edge premium-gallery-edge--left" aria-hidden="true" />
         <div className="premium-gallery-edge premium-gallery-edge--right" aria-hidden="true" />
 
