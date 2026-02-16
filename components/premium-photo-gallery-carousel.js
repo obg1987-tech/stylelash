@@ -433,7 +433,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         style={{
           height: stageSize.h ? `${stageSize.h}px` : undefined,
           ["--card-w"]: `${stageSize.cardW}px`,
-          ["--card-h"]: `${stageSize.cardH}px`
+          ["--card-h"]: `${stageSize.cardH}px`,
+          ["--near-x"]: `${stageSize.nearX}px`,
+          ["--far-x"]: `${stageSize.farX}px`
         }}
       >
         <button

@@ -3107,7 +3107,9 @@ a {
 .premium-gallery-nav {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  --nav-gap: 22px;
+  transform: translate3d(var(--nav-x, 0px), -50%, 0);
   z-index: 30;
   width: 44px;
   height: 44px;
@@ -3129,7 +3131,7 @@ a {
 
 .premium-gallery-nav:hover {
   background: #ffffff;
-  transform: translateY(calc(-50% - 1px));
+  transform: translate3d(var(--nav-x, 0px), calc(-50% - 1px), 0);
 }
 
 .premium-gallery-nav:focus-visible {
@@ -3138,11 +3140,12 @@ a {
 }
 
 .premium-gallery-nav--left {
-  left: 14px;
+  --nav-x: calc(-1 * (var(--far-x) + (var(--card-w) / 2) + var(--nav-gap)));
 }
 
 .premium-gallery-nav--right {
-  right: 14px;
+  /* subtract button width so the center of the circle sits outside the far slide */
+  --nav-x: calc((var(--far-x) + (var(--card-w) / 2) + var(--nav-gap)) - 44px);
 }
 
 .premium-gallery-nav--left::before,
@@ -3160,6 +3163,28 @@ a {
 
 .premium-gallery-nav--right::before {
   transform: rotate(-45deg);
+}
+
+/* On smaller screens, keep controls near edges for usability. */
+@media (max-width: 760px) {
+  .premium-gallery-nav {
+    left: auto;
+    transform: translate3d(0, -50%, 0);
+  }
+
+  .premium-gallery-nav:hover {
+    transform: translate3d(0, calc(-50% - 1px), 0);
+  }
+
+  .premium-gallery-nav--left {
+    left: 12px;
+    --nav-x: 0px;
+  }
+
+  .premium-gallery-nav--right {
+    right: 12px;
+    --nav-x: 0px;
+  }
 }
 
 /* Ultra-subtle grain to avoid "flat cheap white" without looking noisy. */
