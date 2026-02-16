@@ -15,6 +15,45 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
+function getDragProfile(pointerType, viewportWidth) {
+  const type = pointerType || "mouse";
+  const isNarrow = viewportWidth > 0 && viewportWidth <= 440;
+
+  if (type === "touch") {
+    return {
+      basisScale: isNarrow ? 0.74 : 0.78,
+      threshold: isNarrow ? 0.16 : 0.18,
+      flickVelocity: 0.34,
+      velocityDeadzone: 0.06,
+      velocityBlend: 0.38,
+      projectBoost: 180,
+      maxSteps: 2
+    };
+  }
+
+  if (type === "pen") {
+    return {
+      basisScale: 0.86,
+      threshold: 0.2,
+      flickVelocity: 0.42,
+      velocityDeadzone: 0.05,
+      velocityBlend: 0.3,
+      projectBoost: 160,
+      maxSteps: 2
+    };
+  }
+
+  return {
+    basisScale: 0.94,
+    threshold: 0.24,
+    flickVelocity: 0.52,
+    velocityDeadzone: 0.04,
+    velocityBlend: 0.24,
+    projectBoost: 140,
+    maxSteps: 3
+  };
+}
+
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
 
@@ -252,15 +291,12 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     setSettling(false);
   };
 
-  const basis = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
+  const basisBase = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
 
   const tension = useCallback(
     (rawSlides) => {
-      // Resist large drags slightly, but still allow multi-slide movement.
-      const s = rawSlides;
-      const abs = Math.abs(s);
-      if (abs < 0.001) return 0;
-      return Math.sign(s) * (abs / (1 + abs * 0.1));
+      // Keep drag response close to finger/mouse movement without over-compression.
+      return clamp(rawSlides * 0.98, -1.1, 1.1);
     },
     []
   );
@@ -372,6 +408,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
 
     dragStateRef.current = {
       id: event.pointerId,
+      pointerType: event.pointerType || "mouse",
       startX: event.clientX,
       lastX: event.clientX,
       startTime: performance.now(),
@@ -387,11 +424,15 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     if (!s || s.id !== event.pointerId) return;
     event.preventDefault();
 
+    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+    const profile = getDragProfile(s.pointerType, viewportWidth);
     const now = performance.now();
     const dx = event.clientX - s.startX;
     const dt = Math.max(1, now - s.lastTime);
     const step = event.clientX - s.lastX;
-    s.vx = step / dt; // px/ms
+    const instantV = step / dt; // px/ms
+    // Smooth noisy sampling so flick direction is stable across devices.
+    s.vx = s.vx * (1 - profile.velocityBlend) + instantV * profile.velocityBlend;
     s.lastX = event.clientX;
     s.lastTime = now;
 
@@ -399,9 +440,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = 0;
         dragPxRef.current = dx;
-        const rawSlides = -dx / basis;
-        // Allow multi-slide drag preview, with slight resistance.
-        setOffset(clamp(tension(rawSlides), -3, 3));
+        const dragBasis = basisBase * profile.basisScale;
+        const rawSlides = -dx / Math.max(1, dragBasis);
+        setOffset(tension(rawSlides));
       });
     }
   };
@@ -410,18 +451,26 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     const s = dragStateRef.current;
     if (!s || (event && s.id !== event.pointerId)) return;
 
-    const dx = dragPxRef.current;
-    const vSlides = -s.vx / basis; // slides/ms
-    const rawSlides = -dx / basis;
-    const projected = rawSlides + clamp(vSlides * 240, -1.25, 1.25);
-
-    // Small drag can result in no change. Stronger drag or flick advances 1+.
-    const flick = Math.abs(s.vx) > 0.65;
-    const threshold = 0.33;
-    const absP = Math.abs(projected);
-    const signed = Math.sign(projected) || 1;
-    const stepsByPower = clamp(Math.floor(absP + 0.55), 0, 3);
-    const target = !flick && absP < threshold ? 0 : signed * Math.max(1, stepsByPower);
+    const viewportWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+    const profile = getDragProfile(s.pointerType, viewportWidth);
+    const latestDx = event ? event.clientX - s.startX : dragPxRef.current;
+    const dx = Number.isFinite(latestDx) ? latestDx : dragPxRef.current;
+    const releaseBasis = basisBase * profile.basisScale;
+    const rawSlides = -dx / Math.max(1, releaseBasis);
+    const projectedSlides = rawSlides + clamp((-s.vx * profile.projectBoost) / Math.max(1, releaseBasis), -0.28, 0.28);
+    const flick = Math.abs(s.vx) > profile.flickVelocity;
+    const farEnough = Math.abs(projectedSlides) > profile.threshold;
+    const absProjected = Math.abs(projectedSlides);
+    const velocityDirection = Math.abs(s.vx) >= profile.velocityDeadzone ? Math.sign(-s.vx) : 0;
+    const direction = farEnough ? Math.sign(projectedSlides) : velocityDirection;
+    let steps = 0;
+    if (farEnough || flick) {
+      const baseSteps = Math.floor(absProjected + 0.55);
+      const flickSteps = flick ? 1 : 0;
+      const fastFlickBonus = Math.abs(s.vx) > profile.flickVelocity * 1.85 ? 1 : 0;
+      steps = clamp(Math.max(baseSteps, flickSteps) + fastFlickBonus, 1, profile.maxSteps);
+    }
+    const target = direction ? direction * steps : 0;
 
     stopRaf();
     dragStateRef.current = null;
@@ -495,8 +544,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     const absPos = Math.abs(clamped);
     const xDist =
       absPos <= 1
-        ? basis * absPos
-        : basis + (stageSize.farX - basis) * clamp(absPos - 1, 0, 1);
+        ? basisBase * absPos
+        : basisBase + (stageSize.farX - basisBase) * clamp(absPos - 1, 0, 1);
     const x = clamped === 0 ? 0 : (clamped < 0 ? -1 : 1) * xDist;
 
     const shadow =
@@ -572,6 +621,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           const virtual = slot.rel - local;
           const computed = styleAt(virtual);
           const isCenter = Math.abs(virtual) < 0.45;
+          // Keep center emphasis stable during movement to avoid a "focus-stop" feeling.
+          const emphasizeCenter = !dragging && !settling && isCenter;
+          const eagerLoad = slot.rel === 0;
           const stepsToCenter = shift + slot.rel;
 
           // Fill the container with 5 visible slides without gaps by allowing controlled overlap.
@@ -579,7 +631,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
             <button
               key={`${item.id}-${slot.rel}`}
               type="button"
-              className={`premium-slide${isCenter ? " premium-slide--center" : ""}`}
+              className={`premium-slide${emphasizeCenter ? " premium-slide--center" : ""}`}
               aria-label={isCenter ? "Open fullscreen photo" : "Bring photo to center"}
               onClick={() => (isCenter ? onCenterClick() : navigateToSteps(stepsToCenter))}
               style={{
@@ -602,8 +654,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
                     alt={item.alt || "Customer photo"}
                     fill
                     sizes={isCenter ? "60vw" : "26vw"}
-                    priority={isCenter}
-                    loading={isCenter ? "eager" : "lazy"}
+                    priority={eagerLoad}
+                    loading={eagerLoad ? "eager" : "lazy"}
                     quality={82}
                     style={{ objectFit: "cover" }}
                   />
