@@ -321,8 +321,13 @@ export default function Home() {
 
           <div className="review-carousel reveal" aria-label="후기 카드 캐러셀">
             <div className="review-carousel-head">
-              <p>Review Feed</p>
-              <h3>고객 후기 스냅</h3>
+              <div className="review-carousel-head-copy">
+                <p>Review Feed</p>
+                <h3>고객 후기 스냅</h3>
+              </div>
+              <a className="review-carousel-zoom" href="/snap">
+                크게보기
+              </a>
             </div>
             <ReviewCarousel cards={reviewCarouselCards} />
           </div>

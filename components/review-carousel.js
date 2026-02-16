@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
-export default function ReviewCarousel({ cards }) {
+export default function ReviewCarousel({ cards, imageSizes = "280px" }) {
   const loopRef = useRef(null);
   const setRef = useRef(null);
   const offsetRef = useRef(0);
@@ -111,7 +111,7 @@ export default function ReviewCarousel({ cards }) {
           {cards.map((card, index) => (
             <article className="review-slide-card" key={`a-${card.image}-${index}`}>
               <div className="review-slide-media">
-                <Image src={card.image} alt={card.title} fill quality={72} sizes="280px" />
+                <Image src={card.image} alt={card.title} fill quality={72} sizes={imageSizes} />
                 <span className="snap-star snap-star--a" aria-hidden />
                 <span className="snap-star snap-star--b" aria-hidden />
                 <span className="snap-star snap-star--c" aria-hidden />
@@ -123,7 +123,7 @@ export default function ReviewCarousel({ cards }) {
           {cards.map((card, index) => (
             <article className="review-slide-card" key={`b-${card.image}-${index}`}>
               <div className="review-slide-media">
-                <Image src={card.image} alt="" fill quality={72} sizes="280px" />
+                <Image src={card.image} alt="" fill quality={72} sizes={imageSizes} />
                 <span className="snap-star snap-star--a" aria-hidden />
                 <span className="snap-star snap-star--b" aria-hidden />
                 <span className="snap-star snap-star--c" aria-hidden />
