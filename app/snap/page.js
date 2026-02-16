@@ -80,8 +80,7 @@ export default function SnapPage() {
     <main className="snap-page">
       <section className="snap-page-shell">
         <header className="snap-page-head">
-          <p>Gallery</p>
-          <h1>고객 후기 스냅 크게보기</h1>
+          <h1 className="visually-hidden">Customer photo review gallery</h1>
           <Link href="/" className="snap-page-back">
             홈으로
           </Link>
@@ -92,4 +91,3 @@ export default function SnapPage() {
     </main>
   );
 }
-

@@ -2931,20 +2931,25 @@ a {
 
 .snap-page {
   padding: 6.4rem 1.15rem 4.4rem;
+  min-height: 100vh;
   background:
     radial-gradient(circle at 18% 10%, #ffffff 0 26%, #f9fcff 56%, #ffffff 100%),
     linear-gradient(180deg, #ffffff 0%, #fbfdff 60%, #ffffff 100%);
 }
 
 .snap-page-shell {
-  width: min(1100px, 100%);
+  width: 100%;
   margin: 0 auto;
+  min-height: calc(100vh - 10.8rem);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1.1rem;
 }
 
 .snap-page-head {
-  margin-bottom: 1rem;
-  display: grid;
-  gap: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .snap-page-head p {
@@ -2977,6 +2982,18 @@ a {
   background: #f7fbff;
 }
 
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 .premium-gallery {
   --crystal-white: #ffffff;
   --frame-border: #dfe8f2;
@@ -2987,26 +3004,15 @@ a {
 .premium-gallery-frame {
   position: relative;
   width: 100%;
-  border-radius: 18px;
+  border-radius: 22px;
   outline: none;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, #ffffff 0%, #fbfdff 52%, #ffffff 100%),
-    radial-gradient(circle at 42% 30%, #ffffff 0 38%, #f7fbff 70%, #ffffff 100%);
-  box-shadow: 0 26px 60px #0b1c2f12;
+  background: transparent;
 }
 
 /* Ultra-subtle grain to avoid "flat cheap white" without looking noisy. */
 .premium-gallery-frame::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  background-image:
-    repeating-linear-gradient(0deg, #0b1c2f08 0 1px, #ffffff00 1px 3px),
-    repeating-linear-gradient(90deg, #0b1c2f06 0 1px, #ffffff00 1px 4px);
-  mix-blend-mode: multiply;
+  content: none;
 }
 
 .premium-gallery-frame:focus-visible {

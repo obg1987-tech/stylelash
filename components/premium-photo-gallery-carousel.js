@@ -235,7 +235,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     const cardH = Math.round(cardW * (5 / 4)); // fixed aspect ratio prevents layout shift
     const nearX = Math.round(cardW * 0.64);
     const farX = Math.round(cardW * 1.12);
-    const h = Math.round(cardH + 64);
+    const vh = typeof window !== "undefined" ? window.innerHeight : 900;
+    const desired = clamp(vh * 0.72, 520, 860);
+    const h = Math.round(Math.max(cardH + 80, desired));
 
     setStageSize({ w, h, cardW, cardH, nearX, farX });
   }, []);
@@ -450,4 +452,3 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     </section>
   );
 }
-
