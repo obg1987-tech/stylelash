@@ -3120,7 +3120,7 @@ a {
   background: transparent;
   cursor: pointer;
   transform:
-    translate3d(calc(-50% + var(--slot-x) + var(--drag-x)), calc(-50% + var(--slot-y)), 0)
+    translate3d(calc(-50% + var(--slot-x)), calc(-50% + var(--slot-y)), 0)
     scale(var(--slot-scale));
   opacity: var(--slot-opacity);
   filter: brightness(var(--slot-brightness)) blur(var(--slot-blur));

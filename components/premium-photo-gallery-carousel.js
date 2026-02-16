@@ -188,6 +188,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const [activeIndex, setActiveIndex] = useState(() => mod(initialIndex, items.length || 1));
   const [stageSize, setStageSize] = useState({ w: 0, h: 0, cardW: 0, cardH: 0, nearX: 0, farX: 0 });
   const [dragging, setDragging] = useState(false);
+  const [dragX, setDragXState] = useState(0);
   const [hovered, setHovered] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -252,9 +253,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
 
   const setDragX = useCallback((value) => {
     dragXRef.current = value;
-    const stage = stageRef.current;
-    if (!stage) return;
-    stage.style.setProperty("--drag-x", `${value}px`);
+    setDragXState(value);
   }, []);
 
   const stopRaf = () => {
@@ -365,17 +364,55 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     idleUntilRef.current = Date.now() + 5000;
   };
 
-  const onSlideClick = (slotRel, index) => {
-    if (slotRel === 0) return onCenterClick();
-    setActiveByIndex(index);
-  };
-
   const onLightboxNavigate = useCallback(
     (delta) => {
       setActiveIndex((prev) => mod(prev + delta, length || 1));
     },
     [length]
   );
+
+  const slotStyleMap = useMemo(() => {
+    const map = new Map();
+    for (const style of SLOT_STYLES) map.set(style.rel, style);
+    return map;
+  }, []);
+
+  const basis = Math.max(1, stageSize.nearX || stageSize.cardW * 0.64);
+  const t = dragging ? clamp(-dragX / basis, -1, 1) : 0; // fraction of one slide
+
+  const styleAt = (pos) => {
+    const clamped = clamp(pos, -2, 2);
+    const a = Math.floor(clamped);
+    const b = Math.ceil(clamped);
+    const alpha = b === a ? 0 : clamped - a;
+
+    const sa = slotStyleMap.get(a) || slotStyleMap.get(0);
+    const sb = slotStyleMap.get(b) || slotStyleMap.get(0);
+
+    const lerp = (x, y) => x + (y - x) * alpha;
+
+    const absPos = Math.abs(clamped);
+    const xDist =
+      absPos <= 1
+        ? basis * absPos
+        : basis + (stageSize.farX - basis) * clamp(absPos - 1, 0, 1);
+    const x = clamped === 0 ? 0 : (clamped < 0 ? -1 : 1) * xDist;
+
+    const shadow =
+      absPos <= 1 ? 1 - 0.22 * absPos : 0.78 - 0.18 * clamp(absPos - 1, 0, 1);
+    const zIndex = 100 - Math.round(absPos * 12);
+
+    return {
+      x,
+      y: lerp(sa.y, sb.y),
+      scale: lerp(sa.scale, sb.scale),
+      brightness: lerp(sa.brightness, sb.brightness),
+      blur: lerp(sa.blur, sb.blur),
+      opacity: lerp(sa.opacity, sb.opacity),
+      shadow,
+      zIndex
+    };
+  };
 
   return (
     <section className="premium-gallery" ref={containerRef} aria-label={ariaLabel}>
@@ -395,8 +432,6 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         onPointerCancel={finishDrag}
         style={{
           height: stageSize.h ? `${stageSize.h}px` : undefined,
-          // default drag-x for CSS calc
-          ["--drag-x"]: "0px",
           ["--card-w"]: `${stageSize.cardW}px`,
           ["--card-h"]: `${stageSize.cardH}px`
         }}
@@ -424,9 +459,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         <div className="premium-gallery-edge premium-gallery-edge--right" aria-hidden="true" />
 
         {visible.map(({ slot, index, item }) => {
-          const x = Math.abs(slot.rel) === 2 ? stageSize.farX : stageSize.nearX;
-          const signedX = slot.rel === 0 ? 0 : slot.rel < 0 ? -x : x;
-          const isCenter = slot.rel === 0;
+          const virtual = slot.rel - t;
+          const computed = styleAt(virtual);
+          const isCenter = Math.abs(virtual) < 0.45;
 
           // Fill the container with 5 visible slides without gaps by allowing controlled overlap.
           return (
@@ -435,16 +470,16 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
               type="button"
               className={`premium-slide${isCenter ? " premium-slide--center" : ""}`}
               aria-label={isCenter ? "Open fullscreen photo" : "Bring photo to center"}
-              onClick={() => onSlideClick(slot.rel, index)}
+              onClick={() => (isCenter ? onCenterClick() : setActiveByIndex(index))}
               style={{
-                zIndex: slot.z,
-                ["--slot-x"]: `${signedX}px`,
-                ["--slot-y"]: `${slot.y}px`,
-                ["--slot-scale"]: slot.scale,
-                ["--slot-brightness"]: slot.brightness,
-                ["--slot-blur"]: `${slot.blur}px`,
-                ["--slot-opacity"]: slot.opacity,
-                ["--slot-shadow"]: isCenter ? 1 : Math.abs(slot.rel) === 1 ? 0.78 : 0.6,
+                zIndex: computed.zIndex,
+                ["--slot-x"]: `${Math.round(computed.x)}px`,
+                ["--slot-y"]: `${computed.y}px`,
+                ["--slot-scale"]: computed.scale,
+                ["--slot-brightness"]: computed.brightness,
+                ["--slot-blur"]: `${computed.blur}px`,
+                ["--slot-opacity"]: computed.opacity,
+                ["--slot-shadow"]: computed.shadow,
                 transition: dragging || reducedMotion ? "none" : undefined
               }}
             >
