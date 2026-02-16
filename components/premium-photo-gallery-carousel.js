@@ -202,6 +202,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const dragStateRef = useRef(null);
   const rafRef = useRef(0);
   const settleRafRef = useRef(0);
+  const offsetRef = useRef(0);
+  const settleTargetRef = useRef(0);
+  const settleVelRef = useRef(0);
   const idleUntilRef = useRef(0);
 
   const length = items.length;
@@ -242,6 +245,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const stopSettle = () => {
     if (settleRafRef.current) cancelAnimationFrame(settleRafRef.current);
     settleRafRef.current = 0;
+    settleVelRef.current = 0;
     setSettling(false);
   };
 
@@ -258,49 +262,84 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     []
   );
 
-  const animateTo = useCallback(
-    (steps) => {
-      if (!length) return;
-      idleUntilRef.current = Date.now() + 3500;
+  const setOffset = useCallback((value) => {
+    offsetRef.current = value;
+    setOffsetSlides(value);
+  }, []);
 
-      if (reducedMotion) {
+  const startSettleLoop = useCallback(() => {
+    if (settleRafRef.current) return;
+    setSettling(true);
+
+    const tick = () => {
+      const target = settleTargetRef.current;
+      const current = offsetRef.current;
+      let v = settleVelRef.current;
+
+      // Damped spring (feels like "mobile tension" and stays responsive to rapid inputs).
+      v = v * 0.82 + (target - current) * 0.18;
+      const next = current + v;
+      settleVelRef.current = v;
+      setOffset(next);
+
+      const done = Math.abs(target - next) < 0.002 && Math.abs(v) < 0.002;
+      if (done) {
+        const steps = clamp(Math.round(target), -3, 3);
+        settleRafRef.current = 0;
+        settleVelRef.current = 0;
+        settleTargetRef.current = 0;
+        setOffset(0);
+        setSettling(false);
         if (steps) {
           setActiveIndex((prev) => mod(prev + steps, length));
         }
-        setOffsetSlides(0);
-        setSettling(false);
         return;
       }
 
-      stopSettle();
-      setSettling(true);
-      const start = performance.now();
-      const from = offsetSlides;
-      const to = steps;
-      const duration = 520;
-
-      // Ease-out with a tiny "tension" feeling (no overshoot for multi-step moves).
-      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-
-      const tick = (now) => {
-        const p = Math.min(1, (now - start) / duration);
-        const e = easeOut(p);
-        setOffsetSlides(from + (to - from) * e);
-        if (p < 1) {
-          settleRafRef.current = requestAnimationFrame(tick);
-        } else {
-          settleRafRef.current = 0;
-          if (steps) {
-            setActiveIndex((prev) => mod(prev + steps, length));
-          }
-          setOffsetSlides(0);
-          setSettling(false);
-        }
-      };
-
       settleRafRef.current = requestAnimationFrame(tick);
+    };
+
+    settleRafRef.current = requestAnimationFrame(tick);
+  }, [length, setOffset]);
+
+  const navigateBy = useCallback(
+    (delta) => {
+      if (!length) return;
+      idleUntilRef.current = Date.now() + 3500;
+      const d = clamp(delta, -3, 3);
+
+      if (reducedMotion) {
+        setActiveIndex((prev) => mod(prev + d, length));
+        setOffset(0);
+        stopSettle();
+        return;
+      }
+
+      // Accumulate rapid clicks (prevents "no response" feel).
+      settleTargetRef.current = clamp(settleTargetRef.current + d, -3, 3);
+      startSettleLoop();
     },
-    [length, offsetSlides, reducedMotion]
+    [length, reducedMotion, setOffset, startSettleLoop]
+  );
+
+  const navigateToSteps = useCallback(
+    (steps) => {
+      if (!length) return;
+      idleUntilRef.current = Date.now() + 3500;
+      const s = clamp(steps, -3, 3);
+
+      if (reducedMotion) {
+        if (s) setActiveIndex((prev) => mod(prev + s, length));
+        setOffset(0);
+        stopSettle();
+        return;
+      }
+
+      // Override target (used for drag release or "bring to center" click).
+      settleTargetRef.current = s;
+      startSettleLoop();
+    },
+    [length, reducedMotion, setOffset, startSettleLoop]
   );
 
   const onPointerDown = (event) => {
@@ -340,7 +379,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         rafRef.current = 0;
         dragPxRef.current = dx;
         const rawSlides = -dx / basis;
-        setOffsetSlides(tension(rawSlides));
+        setOffset(tension(rawSlides));
       });
     }
   };
@@ -364,17 +403,17 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     setDragging(false);
     dragPxRef.current = 0;
 
-    animateTo(target);
+    navigateToSteps(target);
   };
 
   const onKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
       event.preventDefault();
-      animateTo(-1);
+      navigateBy(-1);
     }
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      animateTo(1);
+      navigateBy(1);
     }
     if (event.key === "Enter" || event.key === " ") {
       // If focused on the carousel container, open the center slide.
@@ -393,11 +432,11 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       const now = Date.now();
       if (hovered || dragging || lightboxOpen) return;
       if (now < idleUntilRef.current) return;
-      animateTo(1);
+      navigateBy(1);
     }, 4200);
 
     return () => window.clearInterval(id);
-  }, [animateTo, dragging, hovered, length, lightboxOpen, reducedMotion]);
+  }, [dragging, hovered, length, lightboxOpen, navigateBy, reducedMotion]);
 
   const onCenterClick = () => {
     setLightboxOpen(true);
@@ -485,7 +524,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           className="premium-gallery-nav premium-gallery-nav--left"
           aria-label="Previous photo"
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => animateTo(-1)}
+          onClick={() => navigateBy(-1)}
         >
           Prev
         </button>
@@ -494,7 +533,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           className="premium-gallery-nav premium-gallery-nav--right"
           aria-label="Next photo"
           onPointerDown={(e) => e.stopPropagation()}
-          onClick={() => animateTo(1)}
+          onClick={() => navigateBy(1)}
         >
           Next
         </button>
@@ -517,7 +556,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
               type="button"
               className={`premium-slide${isCenter ? " premium-slide--center" : ""}`}
               aria-label={isCenter ? "Open fullscreen photo" : "Bring photo to center"}
-              onClick={() => (isCenter ? onCenterClick() : animateTo(stepsToCenter))}
+              onClick={() => (isCenter ? onCenterClick() : navigateToSteps(stepsToCenter))}
               style={{
                 zIndex: computed.zIndex,
                 ["--slot-x"]: `${Math.round(computed.x)}px`,
