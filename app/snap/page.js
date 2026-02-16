@@ -57,12 +57,12 @@ function loadCustomerPhotos() {
 const customerPhotos = loadCustomerPhotos();
 
 export const metadata = {
-  title: "고객 후기 스냅 크게보기",
-  description: "STYLE LASH 고객 후기 스냅 이미지를 크게 확인해 보세요.",
+  title: "STYLE LASH | Customer Snap Gallery",
+  description: "Browse a premium fullscreen customer photo gallery from STYLE LASH.",
   alternates: { canonical: "/snap" },
   openGraph: {
-    title: "고객 후기 스냅 크게보기",
-    description: "STYLE LASH 고객 후기 스냅 이미지를 크게 확인해 보세요.",
+    title: "STYLE LASH | Customer Snap Gallery",
+    description: "Browse a premium fullscreen customer photo gallery from STYLE LASH.",
     url: "/snap",
     images: [
       {
@@ -90,3 +90,4 @@ export default function SnapPage() {
     </main>
   );
 }
+

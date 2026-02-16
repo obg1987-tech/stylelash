@@ -203,8 +203,9 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   const rafRef = useRef(0);
   const settleRafRef = useRef(0);
   const offsetRef = useRef(0);
+  const settleTargetRef = useRef(0);
   const settleVelRef = useRef(0);
-  const pendingStepsRef = useRef(0);
+  const settleTimeRef = useRef(0);
   const idleUntilRef = useRef(0);
 
   const length = items.length;
@@ -246,7 +247,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     if (settleRafRef.current) cancelAnimationFrame(settleRafRef.current);
     settleRafRef.current = 0;
     settleVelRef.current = 0;
-    pendingStepsRef.current = 0;
+    settleTargetRef.current = 0;
+    settleTimeRef.current = 0;
     setSettling(false);
   };
 
@@ -258,7 +260,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       const s = rawSlides;
       const abs = Math.abs(s);
       if (abs < 0.001) return 0;
-      return Math.sign(s) * (abs / (1 + abs * 0.18));
+      return Math.sign(s) * (abs / (1 + abs * 0.1));
     },
     []
   );
@@ -272,34 +274,44 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     if (settleRafRef.current) return;
     setSettling(true);
 
-    const tick = () => {
-      const pending = pendingStepsRef.current;
-      const target = pending === 0 ? 0 : clamp(pending, -1, 1); // step-by-step target avoids shake
+    const tick = (now) => {
+      const last = settleTimeRef.current || now;
+      const dt = clamp((now - last) / 1000, 0.008, 0.05);
+      settleTimeRef.current = now;
+
       const current = offsetRef.current;
+      let target = settleTargetRef.current;
       let v = settleVelRef.current;
 
-      // Damped spring.
-      v = v * 0.82 + (target - current) * 0.18;
-      let next = current + v;
+      // Critically-damped-ish spring. v is in slides/sec.
+      const diff = target - current;
+      const k = 44; // stiffness
+      const d = 14; // damping
+      v += diff * k * dt;
+      v *= Math.exp(-d * dt);
+      let next = current + v * dt;
 
-      // Commit steps as we pass them, consuming the pending queue.
-      if (next > 0.98 && pendingStepsRef.current > 0) {
-        setActiveIndex((prev) => mod(prev + 1, length));
-        pendingStepsRef.current -= 1;
-        next -= 1;
-      } else if (next < -0.98 && pendingStepsRef.current < 0) {
-        setActiveIndex((prev) => mod(prev - 1, length));
-        pendingStepsRef.current += 1;
-        next += 1;
+      // Commit whole-slide steps as we cross them (supports multi-step target smoothly).
+      let committed = 0;
+      if (next >= 1 || next <= -1) {
+        committed = next > 0 ? Math.floor(next) : Math.ceil(next);
+        next -= committed;
+        target -= committed;
+      }
+      if (committed) {
+        setActiveIndex((prev) => mod(prev + committed, length));
       }
 
+      settleTargetRef.current = target;
       settleVelRef.current = v;
       setOffset(next);
 
-      const done = pendingStepsRef.current === 0 && Math.abs(next) < 0.002 && Math.abs(v) < 0.002;
+      const done = Math.abs(target) < 0.001 && Math.abs(next) < 0.001 && Math.abs(v) < 0.02;
       if (done) {
         settleRafRef.current = 0;
         settleVelRef.current = 0;
+        settleTargetRef.current = 0;
+        settleTimeRef.current = 0;
         setOffset(0);
         setSettling(false);
         return;
@@ -325,7 +337,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
       }
 
       // Accumulate rapid clicks (prevents "no response" feel).
-      pendingStepsRef.current += d;
+      settleTargetRef.current = clamp(settleTargetRef.current + d, -12, 12);
       startSettleLoop();
     },
     [length, reducedMotion, setOffset, startSettleLoop]
@@ -344,8 +356,8 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
         return;
       }
 
-      // Override pending (used for drag release or "bring to center" click).
-      pendingStepsRef.current = s;
+      // Override target (used for drag release or "bring to center" click).
+      settleTargetRef.current = s;
       startSettleLoop();
     },
     [length, reducedMotion, setOffset, startSettleLoop]
@@ -406,7 +418,10 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
     // Small drag can result in no change. Stronger drag or flick advances 1+.
     const flick = Math.abs(s.vx) > 0.65;
     const threshold = 0.33;
-    const target = !flick && Math.abs(projected) < threshold ? 0 : clamp(Math.round(projected), -3, 3);
+    const absP = Math.abs(projected);
+    const signed = Math.sign(projected) || 1;
+    const stepsByPower = clamp(Math.floor(absP + 0.55), 0, 3);
+    const target = !flick && absP < threshold ? 0 : signed * Math.max(1, stepsByPower);
 
     stopRaf();
     dragStateRef.current = null;
@@ -501,7 +516,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
   };
 
   // Render window derived from current continuous offset.
-  const shift = clamp(Math.trunc(offsetSlides), -3, 3);
+  const shift = Math.trunc(offsetSlides);
   const local = offsetSlides - shift; // (-1..1)
   const baseIndex = mod(activeIndex + shift, length || 1);
 
@@ -557,7 +572,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
           const virtual = slot.rel - local;
           const computed = styleAt(virtual);
           const isCenter = Math.abs(virtual) < 0.45;
-          const stepsToCenter = slot.rel;
+          const stepsToCenter = shift + slot.rel;
 
           // Fill the container with 5 visible slides without gaps by allowing controlled overlap.
           return (
@@ -569,7 +584,7 @@ export default function PremiumPhotoGalleryCarousel({ items, initialIndex = 0, a
               onClick={() => (isCenter ? onCenterClick() : navigateToSteps(stepsToCenter))}
               style={{
                 zIndex: computed.zIndex,
-                ["--slot-x"]: `${Math.round(computed.x)}px`,
+                ["--slot-x"]: `${computed.x.toFixed(2)}px`,
                 ["--slot-y"]: `${computed.y}px`,
                 ["--slot-scale"]: computed.scale,
                 ["--slot-brightness"]: computed.brightness,

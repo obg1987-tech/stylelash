@@ -18,6 +18,12 @@ export default function sitemap() {
       priority: 0.8
     },
     {
+      url: `${siteUrl}/snap`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.75
+    },
+    {
       url: `${siteUrl}/brow-preview`,
       lastModified,
       changeFrequency: "monthly",

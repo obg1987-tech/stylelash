@@ -5,17 +5,17 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/community", "/brow-preview"],
+        allow: ["/", "/community", "/snap", "/brow-preview"],
         disallow: ["/api/"]
       },
       {
         userAgent: "Googlebot",
-        allow: ["/"],
+        allow: ["/", "/community", "/snap", "/brow-preview"],
         disallow: ["/api/"]
       },
       {
         userAgent: "Yeti",
-        allow: ["/"],
+        allow: ["/", "/community", "/snap", "/brow-preview"],
         disallow: ["/api/"]
       }
     ],
