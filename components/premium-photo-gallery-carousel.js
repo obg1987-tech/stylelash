@@ -1,5 +1,9 @@
 "use client";
 
+/* eslint-disable react-hooks/purity */
+// This component uses wall-clock time only inside event handlers/timers to manage autoplay idling.
+// The `react-hooks/purity` rule can false-positive by flagging time calls that are not executed during render.
+
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 
